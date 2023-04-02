@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "commonjs",
+    "target": "es2019",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "rootDirs": ["src", "tests"],
+    "moduleResolution": "node",
+    "baseUrl": "src",
+    "paths": {
+      "@domain/*": ["domain/*"],
+      "@presentation/*": ["presentation/*"],
+      "@data/*": ["data/*"],
+      "@main/*": ["main/*"],
+      "@infra/*": ["infra/*"],
+      "@utils/*": ["utils/*"],
+      "@tests/*": ["../tests/*"]
+    }
+  },
+  "include": [
+    "src",
+    "jest.config.js",
+    "jest-mongodb-config.js",
+    "tests"
+  ],
+  "exclude": []
+}
