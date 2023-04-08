@@ -1,8 +1,8 @@
-import { AddAccountRepository } from '@data/protocols/db/account/add-account-repository'
 import { faker } from '@faker-js/faker'
+import { AddAccountRepository } from '@data/protocols/db/account/add-account-repository'
 
 export const mockAddAccountRepositoryResult = (): AddAccountRepository.Result => ({
-    name: faker.name.fullName(),
+    name: faker.name.fullName()
 })
 
 export const mockAddAccountRepositoryParams = (): AddAccountRepository.Params => ({

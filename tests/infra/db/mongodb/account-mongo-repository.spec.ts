@@ -1,6 +1,6 @@
 import { MongoHelper } from '@infra/db/mongodb/helpers/mongo-helper'
 import { AccountMongoRepository } from '@infra/db/mongodb/account-mongo-repository'
-import { mockAddAccountRepositoryParams } from '@tests/domain/mocks/mock-add-account-repository'
+import { mockAddAccountParams } from '@tests/domain/mocks/mock-add-account'
 import { Collection } from 'mongodb'
 
 let accountCollection: Collection
@@ -21,7 +21,7 @@ describe('Mongo Account Repository', () => {
     describe('add()', () => {
         test('should return accountName on addAccount correctly', async () => {
             const sut = new AccountMongoRepository()
-            const params = mockAddAccountRepositoryParams()
+            const params = mockAddAccountParams()
 
             const result = await sut.add(params)
 
@@ -32,7 +32,7 @@ describe('Mongo Account Repository', () => {
     describe('checkByEmail()', () => {
         test('should return true if email exists', async () => {
             const sut = new AccountMongoRepository()
-            const params = mockAddAccountRepositoryParams()
+            const params = mockAddAccountParams()
             await accountCollection.insertOne(params)
 
             const result = await sut.checkByEmail(params.email)
@@ -42,7 +42,7 @@ describe('Mongo Account Repository', () => {
 
         test('should return false if email does not exists', async () => {
             const sut = new AccountMongoRepository()
-            const params = mockAddAccountRepositoryParams()
+            const params = mockAddAccountParams()
 
             const result = await sut.checkByEmail(params.email)
 

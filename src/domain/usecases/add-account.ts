@@ -9,5 +9,5 @@ export namespace AddAccount {
         password: string
     }
 
-    export type Result = string
+    export type Result = boolean
 }

@@ -1,8 +1,8 @@
 import { DbAddAccount } from '@data/usecases/account/db-add-account'
 import { HasherStub } from '@tests/data/stubs/criptography-stub'
 import { AddAccountRepositoryStub } from '@tests/data/stubs/add-account-repository-stub'
-import { mockAddAccountRepositoryParams } from '@tests/domain/mocks/mock-add-account-repository'
 import { CheckAccountByEmailRepositoryStub } from '@tests/data/stubs/check-account-by-email-repository-stub'
+import { mockAddAccountRepositoryParams } from '@tests/data/mocks/mock-add-account-repository'
 
 type SutTypes = {
     sut: DbAddAccount,
@@ -72,22 +72,22 @@ describe('DbAddAccount Usecase', () => {
         await expect(promise).rejects.toThrow()
     })
 
-    test('should return name if addAccount runs correctly', async () => {
+    test('should return true if addAccount runs correctly', async () => {
         const { sut, addAccountRepositoryStub } = makeSut()
         const account = mockAddAccountRepositoryParams()
 
         const response = await sut.add(account)
 
-        expect(response).toBe(addAccountRepositoryStub.result.name)
+        expect(response).toBeTruthy()
     })
 
-    test('Should return null if LoadAccountByEmailRepository returns true',async () => {
+    test('Should return false if CheckAccountByEmailRepository returns true',async () => {
         const { sut, checkAccountByEmailRepositoryStub } = makeSut()
         jest.spyOn(checkAccountByEmailRepositoryStub, 'checkByEmail').mockReturnValueOnce(Promise.resolve(true))
         const account = mockAddAccountRepositoryParams()
 
         const result = await sut.add(account)
-        expect(result).toBeNull()
+        expect(result).toBeFalsy()
     })
 
     test('Should call LoadAccountByEmailRepository with correct email',async () => {
