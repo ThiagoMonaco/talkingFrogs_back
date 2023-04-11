@@ -1,7 +1,9 @@
 import { MongoHelper } from '@infra/db/mongodb/helpers/mongo-helper'
 import { AccountMongoRepository } from '@infra/db/mongodb/account-mongo-repository'
-import { mockAddAccountParams } from '@tests/domain/mocks/mock-add-account'
+import { mockAddAccountParams } from '@tests/domain/mocks/add-account-mock'
 import { Collection } from 'mongodb'
+import { mockAccountModel } from '@tests/domain/mocks/account-model-mock'
+import { faker } from '@faker-js/faker'
 
 let accountCollection: Collection
 describe('Mongo Account Repository', () => {
@@ -50,6 +52,46 @@ describe('Mongo Account Repository', () => {
         })
     })
 
+    describe('loadByEmail()', () => {
+        test('should return account on loadByEmail correctly', async () => {
+            const sut = new AccountMongoRepository()
+            const params = mockAddAccountParams()
+            await accountCollection.insertOne(params)
 
+            const result = await sut.loadByEmail(params.email)
+
+            expect(result).toBeTruthy()
+            expect(result.id).toBeTruthy()
+            expect(result.name).toBe(params.name)
+            expect(result.password).toBe(params.password)
+            expect(result.email).toBe(params.email)
+        })
+
+        test('should return null if loadByEmail fails', async () => {
+            const sut = new AccountMongoRepository()
+
+            const result = await sut.loadByEmail('')
+
+            expect(result).toBeNull()
+        })
+    })
+
+    describe('updateAccessToken()', () => {
+        test('should update the account accessToken on updateAccessToken success', async () => {
+            const sut = new AccountMongoRepository()
+
+            const accountParams = mockAccountModel()
+            const res = await accountCollection.insertOne(accountParams)
+            const fakeAccount = await accountCollection.findOne({ _id: res.insertedId })
+            expect(fakeAccount.accessToken).toBeFalsy()
+
+            const token = faker.datatype.uuid()
+            await sut.updateAccessToken(fakeAccount._id.toString(), token)
+            const account = await accountCollection.findOne({ _id: fakeAccount._id })
+
+            expect(account).toBeTruthy()
+            expect(account.accessToken).toBe(token)
+        })
+    })
 
 })

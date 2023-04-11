@@ -1,6 +1,6 @@
 import { AddAccountRepository } from '@data/protocols/db/account/add-account-repository'
 
-import { mockAddAccountRepositoryResult } from '@tests/data/mocks/mock-add-account-repository'
+import { mockAddAccountRepositoryResult } from '@tests/data/mocks/add-account-repository-mock'
 
 
 export class AddAccountRepositoryStub implements AddAccountRepository {
