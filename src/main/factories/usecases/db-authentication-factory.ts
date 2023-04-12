@@ -8,7 +8,7 @@ export const makeDbAuthenticationFactory = (): DbAuthentication => {
     const salt = 12
 
     const bcryptAdapter = new BcryptAdapter(salt)
-    const jwtAdapter = new JwtAdapter(env.jwtSecret)
+    const jwtAdapter = new JwtAdapter(env.jwtSecret, env.jwtExpiresIn)
     const accountMongoRepository = new AccountMongoRepository()
 
     const dbAuthentication = new DbAuthentication(
