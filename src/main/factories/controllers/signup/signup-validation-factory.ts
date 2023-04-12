@@ -2,7 +2,7 @@ import {
     ValidatorComposite,
     RequiredFieldValidation,
     CompareFieldValidation,
-    EmailValidation
+    EmailValidation, NotBlankFieldValidation
 } from '@presentation/helpers/validators'
 import { Validator } from '@presentation/helpers/validators/validator'
 import { EmailValidatorAdapter } from '@utils/email-validator'
@@ -12,7 +12,7 @@ export const makeSignUpValidation = (): ValidatorComposite => {
 
     const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
     for (const field of requiredFields) {
-        validations.push(new RequiredFieldValidation(field))
+        validations.push(new NotBlankFieldValidation(field))
     }
 
     validations.push(new CompareFieldValidation('password', 'passwordConfirmation'))
