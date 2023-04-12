@@ -3,12 +3,15 @@ import { CheckAccountByEmailRepository } from '@data/protocols/db/account/check-
 import { MongoHelper } from '@infra/db/mongodb/helpers/mongo-helper'
 import { LoadAccountByEmailRepository } from '@data/protocols/db/account/load-account-by-email-repository'
 import { UpdateAccessTokenRepository } from '@data/protocols/db/account/update-access-token-repository'
+import { LoadAccountByTokenRepository } from '@data/protocols/db/account/load-account-by-token-repository'
+import { AccountModel } from '@domain/models/account'
 
 export class AccountMongoRepository implements
     AddAccountRepository,
     CheckAccountByEmailRepository,
     LoadAccountByEmailRepository,
-    UpdateAccessTokenRepository {
+    UpdateAccessTokenRepository,
+    LoadAccountByTokenRepository {
 
     async findById(id) {
         const accountCollection = MongoHelper.getCollection('accounts')
@@ -48,6 +51,19 @@ export class AccountMongoRepository implements
                 accessToken: token
             }
         })
+    }
+
+    async loadByToken(token: string): Promise<AccountModel> {
+        const accountCollection = MongoHelper.getCollection('accounts')
+        const account = await accountCollection.findOne({
+            accessToken: token
+        })
+
+        if(!account) {
+            return null
+        }
+
+        return MongoHelper.mapId(account)
     }
 
 }

@@ -2,7 +2,7 @@ import { MongoHelper } from '@infra/db/mongodb/helpers/mongo-helper'
 import { AccountMongoRepository } from '@infra/db/mongodb/account-mongo-repository'
 import { mockAddAccountParams } from '@tests/domain/mocks/add-account-mock'
 import { Collection } from 'mongodb'
-import { mockAccountModel } from '@tests/domain/mocks/account-model-mock'
+import { mockAccountModel, mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import { faker } from '@faker-js/faker'
 
 let accountCollection: Collection
@@ -91,6 +91,27 @@ describe('Mongo Account Repository', () => {
 
             expect(account).toBeTruthy()
             expect(account.accessToken).toBe(token)
+        })
+    })
+
+    describe('loadByToken()', () => {
+        test('should return an account on loadByToken', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModelWithAccessToken()
+            await accountCollection.insertOne(accountParams)
+
+            const account = await sut.loadByToken(accountParams.accessToken)
+
+            expect(account).toBeTruthy()
+            expect(account.id).toBeTruthy()
+        })
+
+        test('should return null if loadByToken fails', async () => {
+            const sut = new AccountMongoRepository()
+
+            const account = await sut.loadByToken('')
+
+            expect(account).toBeNull()
         })
     })
 

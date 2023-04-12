@@ -7,3 +7,11 @@ export const mockAccountModel = (): AccountModel => ({
     password: faker.internet.password(),
     id: faker.datatype.uuid()
 })
+
+export const mockAccountModelWithAccessToken = (): AccountModel => ({
+    name: faker.name.firstName(),
+    email: faker.internet.email(),
+    password: faker.internet.password(),
+    id: faker.datatype.uuid(),
+    accessToken: faker.datatype.uuid()
+})

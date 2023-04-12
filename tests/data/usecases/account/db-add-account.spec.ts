@@ -1,4 +1,4 @@
-import { DbAddAccount } from '@data/usecases/account/db-add-account'
+import { DbAddAccount } from '@data/usecases/db-add-account'
 import { HasherStub } from '@tests/data/stubs/criptography-stub'
 import { AddAccountRepositoryStub } from '@tests/data/stubs/add-account-repository-stub'
 import { CheckAccountByEmailRepositoryStub } from '@tests/data/stubs/check-account-by-email-repository-stub'
