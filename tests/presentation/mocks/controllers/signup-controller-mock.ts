@@ -1,4 +1,4 @@
-import { SignUpController } from '@presentation/controllers/signup/signup-controller'
+import { SignUpController } from '@presentation/controllers/signup-controller'
 import { faker } from '@faker-js/faker'
 
 export const mockSignUpControllerRequest = (): SignUpController.Request => {

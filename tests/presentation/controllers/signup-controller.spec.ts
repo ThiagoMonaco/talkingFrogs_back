@@ -1,4 +1,4 @@
-import { SignupController } from '@presentation/controllers/signup/signup-controller'
+import { SignupController } from '@presentation/controllers/signup-controller'
 import { AddAccountStub } from '@tests/domain/stubs/add-account-stub'
 import { ValidationStub } from '@tests/presentation/stubs/helpers/validation-stub'
 import { AuthenticationStub } from '@tests/domain/stubs/authentication-stub'
