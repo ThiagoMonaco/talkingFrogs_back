@@ -71,4 +71,14 @@ describe('AskQuestionController', () => {
         expect(response.statusCode).toBe(500)
         expect(response.body).toEqual(new ServerError(error.stack))
     })
+
+    test('Should return 200 if askQuestion returns a valid response', async () => {
+        const { sut, askQuestionStub } = makeSut()
+        const request = mockAskQuestionControllerRequest()
+
+        const response = await sut.handle(request)
+
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toEqual(askQuestionStub.result)
+    })
 })

@@ -20,9 +20,11 @@ export class AskQuestionController implements Controller {
             }
 
             const { targetAccountId, accountId, question } = request
-            await this.askQuestion.ask({ targetAccountId, accountId, question })
-            
-            return ok()
+            const response = await this.askQuestion.ask({ targetAccountId, accountId, question })
+
+            return ok({
+                questionId: response.questionId,
+            })
         } catch (error) {
             return serverError(new Error(error))
         }
