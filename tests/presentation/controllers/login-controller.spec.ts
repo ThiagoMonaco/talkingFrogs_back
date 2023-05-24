@@ -10,7 +10,6 @@ interface SutTypes {
     authenticationStub: AuthenticationStub
 }
 
-
 const makeSut = (): SutTypes => {
     const validatorStub = new ValidationStub()
     const authenticationStub = new AuthenticationStub()
