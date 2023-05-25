@@ -1,5 +1,5 @@
 import { AskQuestion } from '@domain/usecases/ask-question'
-import { AddQuestionRepository } from '@data/protocols/db/account/add-question-repository'
+import { AddQuestionRepository } from '@data/protocols/db/question/add-question-repository'
 
 export class DbAskQuestion implements AskQuestion {
     constructor(

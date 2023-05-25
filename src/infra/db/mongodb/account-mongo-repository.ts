@@ -5,7 +5,7 @@ import { LoadAccountByEmailRepository } from '@data/protocols/db/account/load-ac
 import { UpdateAccessTokenRepository } from '@data/protocols/db/account/update-access-token-repository'
 import { LoadAccountByTokenRepository } from '@data/protocols/db/account/load-account-by-token-repository'
 import { AccountModel } from '@domain/models/account'
-import { AddQuestionRepository } from '@data/protocols/db/account/add-question-repository'
+import { AddQuestionRepository } from '@data/protocols/db/question/add-question-repository'
 import { ObjectId } from 'mongodb'
 import { CheckAccountByNameRepository } from '@data/protocols/db/account/check-account-by-name-repository'
 

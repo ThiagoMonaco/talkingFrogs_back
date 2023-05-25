@@ -4,7 +4,7 @@ import { mockAddAccountParams } from '@tests/domain/mocks/add-account-mock'
 import { Collection, ObjectId } from 'mongodb'
 import { mockAccountModel, mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import { faker } from '@faker-js/faker'
-import { AddQuestionRepository } from '@data/protocols/db/account/add-question-repository'
+import { AddQuestionRepository } from '@data/protocols/db/question/add-question-repository'
 
 let accountCollection: Collection
 describe('Mongo Account Repository', () => {
