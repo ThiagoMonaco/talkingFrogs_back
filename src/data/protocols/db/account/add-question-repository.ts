@@ -4,7 +4,7 @@ export interface AddQuestionRepository {
 
 export namespace AddQuestionRepository {
     export type Params = {
-        targetAccountId: string
+        accountName: string
         question: string
     }
 

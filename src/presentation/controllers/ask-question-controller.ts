@@ -2,6 +2,7 @@ import { Controller, HttpResponse } from '@presentation/protocols'
 import { Validator } from '@presentation/helpers/validators'
 import { badRequest, ok, serverError } from '@presentation/helpers/http-helper'
 import { AskQuestion } from '@domain/usecases/ask-question'
+import { UserNotFoundError } from '@presentation/errors'
 
 export class AskQuestionController implements Controller {
     private readonly validator: Validator
@@ -19,8 +20,12 @@ export class AskQuestionController implements Controller {
                 return badRequest(error)
             }
 
-            const { targetAccountId, question } = request
-            const response = await this.askQuestion.ask({ targetAccountId, question })
+            const { accountName, question } = request
+            const response = await this.askQuestion.ask({ accountName, question })
+
+            if(!response) {
+                return badRequest(new UserNotFoundError())
+            }
 
             return ok({
                 questionId: response.questionId,
@@ -33,7 +38,7 @@ export class AskQuestionController implements Controller {
 
 export namespace AskQuestionController {
     export type Request = {
-        targetAccountId: string
+        accountName: string
         question: string
     }
 }

@@ -78,12 +78,12 @@ export class AccountMongoRepository implements
     }
 
     async addQuestion(params: AddQuestionRepository.Params): Promise<AddQuestionRepository.Result> {
-        const { question, targetAccountId } = params
+        const { question, accountName } = params
         const accountCollection = MongoHelper.getCollection('accounts')
         const questionId = new ObjectId()
 
         const result = await accountCollection.updateOne({
-            _id: MongoHelper.parseToObjectId(targetAccountId)
+            name: accountName
         },
             {
                 $push: {

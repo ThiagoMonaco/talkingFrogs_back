@@ -125,7 +125,7 @@ describe('Mongo Account Repository', () => {
 
             const questionText = faker.lorem.sentence()
             const question: AddQuestionRepository.Params = {
-                targetAccountId: baseAccountInsertRes.insertedId.toString(),
+                accountName: baseAccountParams.name,
                 question: questionText
             }
 
@@ -144,7 +144,7 @@ describe('Mongo Account Repository', () => {
 
             const questionText = faker.lorem.sentence()
             const question: AddQuestionRepository.Params = {
-                targetAccountId: new ObjectId().toString(),
+                accountName: faker.internet.userName(),
                 question: questionText
             }
 

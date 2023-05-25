@@ -3,7 +3,7 @@ import { ValidationStub } from '@tests/presentation/stubs/helpers/validation-stu
 import { AskQuestionStub } from '@tests/domain/stubs/ask-question-stub'
 import { mockAskQuestionControllerRequest } from '@tests/presentation/mocks/controllers/ask-question-controller-mock'
 import { badRequest } from '@presentation/helpers/http-helper'
-import { ServerError } from '@presentation/errors'
+import { ServerError, UserNotFoundError } from '@presentation/errors'
 
 interface SutTypes {
     sut: AskQuestionController
@@ -48,7 +48,7 @@ describe('AskQuestionController', () => {
         const askSpy = jest.spyOn(askQuestionStub, 'ask')
         const request = mockAskQuestionControllerRequest()
         const expectedParams: AskQuestionController.Request = {
-            targetAccountId: request.targetAccountId,
+            accountName: request.accountName,
             question: request.question
         }
 
@@ -71,7 +71,7 @@ describe('AskQuestionController', () => {
         expect(response.body).toEqual(new ServerError(error.stack))
     })
 
-    test('Should return 200 if askQuestion returns a valid response', async () => {
+    test('Should return 200 if askQuestion returns correctly', async () => {
         const { sut, askQuestionStub } = makeSut()
         const request = mockAskQuestionControllerRequest()
 
@@ -79,5 +79,15 @@ describe('AskQuestionController', () => {
 
         expect(response.statusCode).toBe(200)
         expect(response.body).toEqual(askQuestionStub.result)
+    })
+
+    test('Should return 400 UserNotFoundError if askQuestion returns null', async () => {
+        const { sut, askQuestionStub } = makeSut()
+        askQuestionStub.result = null
+        const request = mockAskQuestionControllerRequest()
+
+        const response = await sut.handle(request)
+
+        expect(response).toEqual(badRequest(new UserNotFoundError()))
     })
 })

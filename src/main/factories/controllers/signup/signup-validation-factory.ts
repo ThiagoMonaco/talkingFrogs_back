@@ -1,6 +1,5 @@
 import {
     ValidatorComposite,
-    RequiredFieldValidation,
     CompareFieldValidation,
     EmailValidation, NotBlankFieldValidation
 } from '@presentation/helpers/validators'
