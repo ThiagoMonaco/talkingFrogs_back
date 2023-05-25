@@ -7,10 +7,12 @@ import { LoadAccountByTokenRepository } from '@data/protocols/db/account/load-ac
 import { AccountModel } from '@domain/models/account'
 import { AddQuestionRepository } from '@data/protocols/db/account/add-question-repository'
 import { ObjectId } from 'mongodb'
+import { CheckAccountByNameRepository } from '@data/protocols/db/account/check-account-by-name-repository'
 
 export class AccountMongoRepository implements
     AddAccountRepository,
     CheckAccountByEmailRepository,
+    CheckAccountByNameRepository,
     LoadAccountByEmailRepository,
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository,
@@ -27,6 +29,12 @@ export class AccountMongoRepository implements
         const account = await this.findById(accountId)
 
         return account && account.name
+    }
+
+    async checkByName(name: string): Promise<CheckAccountByNameRepository.Result> {
+        const accountCollection = await MongoHelper.getCollection('accounts')
+        const account = await accountCollection.findOne({ name })
+        return !!account
     }
 
     async checkByEmail(email: CheckAccountByEmailRepository.Params): Promise<CheckAccountByEmailRepository.Result> {

@@ -3,27 +3,35 @@ import { HasherStub } from '@tests/data/stubs/criptography-stub'
 import { AddAccountRepositoryStub } from '@tests/data/stubs/add-account-repository-stub'
 import { CheckAccountByEmailRepositoryStub } from '@tests/data/stubs/check-account-by-email-repository-stub'
 import { mockAddAccountRepositoryParams } from '@tests/data/mocks/add-account-repository-mock'
+import { CheckAccountByNameRepositoryStub } from '@tests/data/stubs/check-account-by-name-repository-stub'
+import { EmailAlreadyExistsError, NameAlreadyExistsError } from '@presentation/errors'
 
 type SutTypes = {
     sut: DbAddAccount,
     hasherStub: HasherStub,
-
     addAccountRepositoryStub: AddAccountRepositoryStub,
-
-    checkAccountByEmailRepositoryStub: CheckAccountByEmailRepositoryStub
+    checkAccountByEmailRepositoryStub: CheckAccountByEmailRepositoryStub,
+    checkAccountByNameRepositoryStub: CheckAccountByNameRepositoryStub
 }
 
 const makeSut = (): SutTypes => {
     const hasherStub = new HasherStub()
     const addAccountRepositoryStub = new AddAccountRepositoryStub()
     const checkAccountByEmailRepositoryStub = new CheckAccountByEmailRepositoryStub()
-    const sut = new DbAddAccount(hasherStub, addAccountRepositoryStub, checkAccountByEmailRepositoryStub)
+    const checkAccountByNameRepositoryStub = new CheckAccountByNameRepositoryStub()
+    const sut = new DbAddAccount(
+        hasherStub,
+        addAccountRepositoryStub,
+        checkAccountByEmailRepositoryStub,
+        checkAccountByNameRepositoryStub
+    )
 
     return {
         sut,
         hasherStub,
         addAccountRepositoryStub,
-        checkAccountByEmailRepositoryStub
+        checkAccountByEmailRepositoryStub,
+        checkAccountByNameRepositoryStub
     }
 }
 
@@ -81,13 +89,22 @@ describe('DbAddAccount Usecase', () => {
         expect(response).toBeTruthy()
     })
 
-    test('Should return false if CheckAccountByEmailRepository returns true',async () => {
+    test('Should throw EmailAlreadyExistsError if CheckAccountByEmailRepository returns true',async () => {
         const { sut, checkAccountByEmailRepositoryStub } = makeSut()
-        jest.spyOn(checkAccountByEmailRepositoryStub, 'checkByEmail').mockReturnValueOnce(Promise.resolve(true))
+        checkAccountByEmailRepositoryStub.accountExists = true
         const account = mockAddAccountRepositoryParams()
 
-        const result = await sut.add(account)
-        expect(result).toBeFalsy()
+        const result = sut.add(account)
+        await expect(result).rejects.toThrow(new EmailAlreadyExistsError())
+    })
+
+    test('Should throw NameAlreadyExistsError if CheckAccountByNameRepository returns true',async () => {
+        const { sut, checkAccountByNameRepositoryStub } = makeSut()
+        checkAccountByNameRepositoryStub.result = true
+        const account = mockAddAccountRepositoryParams()
+
+        const result = sut.add(account)
+        await expect(result).rejects.toThrow(new NameAlreadyExistsError())
     })
 
     test('Should call LoadAccountByEmailRepository with correct email',async () => {

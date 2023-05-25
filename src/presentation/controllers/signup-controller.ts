@@ -5,6 +5,7 @@ import { Validator } from '@presentation/helpers/validators/validator'
 import { Authentication } from '@domain/usecases/authentication'
 import { EmailAlreadyExistsError } from '@presentation/errors/email-already-exists-error'
 import { badRequest, forbidden, ok, serverError } from '@presentation/helpers/http-helper'
+import { NameAlreadyExistsError } from '@presentation/errors'
 
 export class SignupController implements Controller {
     constructor(
@@ -23,14 +24,18 @@ export class SignupController implements Controller {
 
             const { name, email, password } = request
 
-            const success = await this.addAccount.add({
-                name: name,
-                email: email,
-                password: password
-            })
-
-            if(!success) {
-                return forbidden(new EmailAlreadyExistsError())
+            try {
+                await this.addAccount.add({
+                    name: name,
+                    email: email,
+                    password: password
+                })
+            } catch (error) {
+                if(error instanceof EmailAlreadyExistsError ||
+                   error instanceof NameAlreadyExistsError) {
+                    return forbidden(error)
+                }
+                throw error
             }
 
             const authenticationResult = await this.authentication.auth({ email, password } )

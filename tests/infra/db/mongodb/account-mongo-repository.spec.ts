@@ -154,4 +154,25 @@ describe('Mongo Account Repository', () => {
         })
     })
 
+    describe('checkByName()', () => {
+        test('should return true if name exists', async () => {
+            const sut = new AccountMongoRepository()
+            const params = mockAddAccountParams()
+            await accountCollection.insertOne(params)
+
+            const result = await sut.checkByName(params.name)
+
+            expect(result).toBeTruthy()
+        })
+
+        test('should return false if name does not exists', async () => {
+            const sut = new AccountMongoRepository()
+            const params = mockAddAccountParams()
+
+            const result = await sut.checkByName(params.name)
+
+            expect(result).toBeFalsy()
+        })
+    })
+
 })

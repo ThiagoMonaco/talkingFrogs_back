@@ -4,7 +4,7 @@ import { ValidationStub } from '@tests/presentation/stubs/helpers/validation-stu
 import { AuthenticationStub } from '@tests/domain/stubs/authentication-stub'
 import { mockSignUpControllerRequest } from '@tests/presentation/mocks/controllers/signup-controller-mock'
 import { badRequest, forbidden, serverError } from '@presentation/helpers/http-helper'
-import { EmailAlreadyExistsError } from '@presentation/errors'
+import { EmailAlreadyExistsError, NameAlreadyExistsError } from '@presentation/errors'
 
 interface SutType {
     sut: SignupController,
@@ -51,13 +51,31 @@ describe('SignUp Controller', () => {
         expect(response).toEqual(serverError(new Error()))
     })
 
-    test('should return 403 if addAccount returns false', async () => {
+    test('should return 403 if addAccount throws EmailAlreadyExistsError', async () => {
         const { sut, addAccountStub } = createSut()
-        addAccountStub.result = false
+        jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => { throw new EmailAlreadyExistsError() })
 
         const httpResponse = await sut.handle(mockSignUpControllerRequest())
 
         expect(httpResponse).toEqual(forbidden(new EmailAlreadyExistsError()))
+    })
+
+    test('should return 403 if addAccount throw NameAlreadyExistsError', async () => {
+        const { sut, addAccountStub } = createSut()
+        jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => { throw new NameAlreadyExistsError() })
+
+        const httpResponse = await sut.handle(mockSignUpControllerRequest())
+
+        expect(httpResponse).toEqual(forbidden(new NameAlreadyExistsError()))
+    })
+
+    test('should return 500 if addAccount throws a unknown error', async () => {
+        const { sut, addAccountStub } = createSut()
+        jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => { throw new Error() })
+
+        const httpResponse = await sut.handle(mockSignUpControllerRequest())
+
+        expect(httpResponse).toEqual(serverError(new Error()))
     })
 
     test('should call addAccount with 200 if correct data is provided', async() => {
