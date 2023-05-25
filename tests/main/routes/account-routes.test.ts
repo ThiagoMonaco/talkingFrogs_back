@@ -42,7 +42,6 @@ describe('Account routes', () => {
             const originalPassword = accountParams.password
             accountParams.password = hashedPassword
 
-
             await accountCollection.insertOne(accountParams)
 
             await request(app)
