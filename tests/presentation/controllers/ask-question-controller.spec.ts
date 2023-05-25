@@ -49,7 +49,6 @@ describe('AskQuestionController', () => {
         const request = mockAskQuestionControllerRequest()
         const expectedParams: AskQuestionController.Request = {
             targetAccountId: request.targetAccountId,
-            accountId: request.accountId,
             question: request.question
         }
 

@@ -1,9 +1,10 @@
 import { MongoHelper } from '@infra/db/mongodb/helpers/mongo-helper'
 import { AccountMongoRepository } from '@infra/db/mongodb/account-mongo-repository'
 import { mockAddAccountParams } from '@tests/domain/mocks/add-account-mock'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { mockAccountModel, mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import { faker } from '@faker-js/faker'
+import { AddQuestionRepository } from '@data/protocols/db/account/add-question-repository'
 
 let accountCollection: Collection
 describe('Mongo Account Repository', () => {
@@ -112,6 +113,44 @@ describe('Mongo Account Repository', () => {
             const account = await sut.loadByToken('')
 
             expect(account).toBeNull()
+        })
+    })
+
+    describe('addQuestion', () => {
+        test('should add a question on addQuestion success', async () => {
+            const sut = new AccountMongoRepository()
+            const baseAccountParams = mockAccountModelWithAccessToken()
+
+            const baseAccountInsertRes = await accountCollection.insertOne(baseAccountParams)
+
+            const questionText = faker.lorem.sentence()
+            const question: AddQuestionRepository.Params = {
+                targetAccountId: baseAccountInsertRes.insertedId.toString(),
+                question: questionText
+            }
+
+            const result = await sut.addQuestion(question)
+
+            const baseAccount = await accountCollection.findOne({ _id: baseAccountInsertRes.insertedId })
+
+            expect(result).toBeTruthy()
+            expect(baseAccount.questions).toBeTruthy()
+            expect(baseAccount.questions.length).toBe(1)
+            expect(baseAccount.questions[0].question).toBe(questionText)
+        })
+
+        test('should return null if addQuestion fails', async () => {
+            const sut = new AccountMongoRepository()
+
+            const questionText = faker.lorem.sentence()
+            const question: AddQuestionRepository.Params = {
+                targetAccountId: new ObjectId().toString(),
+                question: questionText
+            }
+
+            const result = await sut.addQuestion(question)
+
+            expect(result).toBeNull()
         })
     })
 

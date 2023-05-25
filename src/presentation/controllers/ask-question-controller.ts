@@ -19,8 +19,8 @@ export class AskQuestionController implements Controller {
                 return badRequest(error)
             }
 
-            const { targetAccountId, accountId, question } = request
-            const response = await this.askQuestion.ask({ targetAccountId, accountId, question })
+            const { targetAccountId, question } = request
+            const response = await this.askQuestion.ask({ targetAccountId, question })
 
             return ok({
                 questionId: response.questionId,
@@ -34,7 +34,6 @@ export class AskQuestionController implements Controller {
 export namespace AskQuestionController {
     export type Request = {
         targetAccountId: string
-        accountId: string
         question: string
     }
 }

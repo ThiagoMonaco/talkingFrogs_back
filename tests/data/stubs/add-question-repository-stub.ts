@@ -5,7 +5,7 @@ export class AddQuestionRepositoryStub implements AddQuestionRepository {
     result = {
         questionId: faker.datatype.uuid()
     }
-    async add(params) {
+    async addQuestion(params) {
         return this.result
     }
 }

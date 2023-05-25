@@ -3,6 +3,5 @@ import { faker } from '@faker-js/faker'
 
 export const mockAskQuestionControllerRequest = (): AskQuestionController.Request => ({
     question: faker.lorem.sentence(),
-    accountId: faker.datatype.uuid(),
     targetAccountId: faker.datatype.uuid()
 })

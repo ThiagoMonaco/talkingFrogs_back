@@ -5,13 +5,16 @@ import { LoadAccountByEmailRepository } from '@data/protocols/db/account/load-ac
 import { UpdateAccessTokenRepository } from '@data/protocols/db/account/update-access-token-repository'
 import { LoadAccountByTokenRepository } from '@data/protocols/db/account/load-account-by-token-repository'
 import { AccountModel } from '@domain/models/account'
+import { AddQuestionRepository } from '@data/protocols/db/account/add-question-repository'
+import { ObjectId } from 'mongodb'
 
 export class AccountMongoRepository implements
     AddAccountRepository,
     CheckAccountByEmailRepository,
     LoadAccountByEmailRepository,
     UpdateAccessTokenRepository,
-    LoadAccountByTokenRepository {
+    LoadAccountByTokenRepository,
+    AddQuestionRepository {
 
     async findById(id) {
         const accountCollection = MongoHelper.getCollection('accounts')
@@ -64,6 +67,33 @@ export class AccountMongoRepository implements
         }
 
         return MongoHelper.mapId(account)
+    }
+
+    async addQuestion(params: AddQuestionRepository.Params): Promise<AddQuestionRepository.Result> {
+        const { question, targetAccountId } = params
+        const accountCollection = MongoHelper.getCollection('accounts')
+        const questionId = new ObjectId()
+
+        const result = await accountCollection.updateOne({
+            _id: MongoHelper.parseToObjectId(targetAccountId)
+        },
+            {
+                $push: {
+                    questions: {
+                        question: question,
+                        questionId: questionId,
+                        answer: null
+                    }
+                }
+        })
+
+        if(result.modifiedCount === 0) {
+            return null
+        }
+
+        return {
+            questionId: questionId.toString()
+        }
     }
 
 }

@@ -5,7 +5,6 @@ export interface AskQuestion {
 export namespace AskQuestion {
     export type Params = {
         targetAccountId: string
-        accountId: string
         question: string
     }
 

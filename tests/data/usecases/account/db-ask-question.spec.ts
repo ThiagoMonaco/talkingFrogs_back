@@ -21,7 +21,7 @@ describe('DbAskQuestion Usecase', () => {
 
     test('Should call AddQuestionRepository with correct values', async () => {
         const { sut, addQuestionRepositoryStub } = makeSut()
-        const addSpy = jest.spyOn(addQuestionRepositoryStub, 'add')
+        const addSpy = jest.spyOn(addQuestionRepositoryStub, 'addQuestion')
         const params = mockAskQuestionParams()
 
         await sut.ask(params)
@@ -31,7 +31,7 @@ describe('DbAskQuestion Usecase', () => {
 
     test('Should throw if AddQuestionRepository throws', async () => {
         const { sut, addQuestionRepositoryStub } = makeSut()
-        jest.spyOn(addQuestionRepositoryStub, 'add').mockReturnValueOnce(Promise.reject(new Error()))
+        jest.spyOn(addQuestionRepositoryStub, 'addQuestion').mockReturnValueOnce(Promise.reject(new Error()))
 
         const promise = sut.ask(mockAskQuestionParams())
 
