@@ -1,6 +1,6 @@
 import { Controller, HttpResponse } from '@presentation/protocols'
 import { Validator } from '@presentation/helpers/validators'
-import { badRequest, serverError } from '@presentation/helpers/http-helper'
+import { badRequest, ok, serverError } from '@presentation/helpers/http-helper'
 import { AnswerQuestion } from '@domain/usecases/answer-question'
 import { QuestionNotFoundError } from '@presentation/errors'
 
@@ -18,12 +18,14 @@ export class AnswerQuestionController implements Controller {
                 return badRequest(error)
             }
 
-            const { questionId, answer } = request
+            const { questionId, answer, accountId } = request
 
-            const result = await this.answerQuestion.answer({ questionId, answer })
+            const result = await this.answerQuestion.answer({ questionId, answer, accountId })
             if(!result) {
                 return badRequest(new QuestionNotFoundError())
             }
+
+            return ok()
 
         } catch (error) {
             return serverError(new Error(error))
@@ -35,5 +37,6 @@ export namespace AnswerQuestionController {
     export type Request = {
         questionId: string
         answer: string
+        accountId: string
     }
 }

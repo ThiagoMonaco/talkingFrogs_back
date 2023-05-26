@@ -5,6 +5,8 @@ import { Collection, ObjectId } from 'mongodb'
 import { mockAccountModel, mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import { faker } from '@faker-js/faker'
 import { AddQuestionRepository } from '@data/protocols/db/question/add-question-repository'
+import { mockAskQuestionParams } from '@tests/data/mocks/ask-question-mock'
+import { mockQuestionModel } from '@tests/domain/mocks/question-model-mock'
 
 let accountCollection: Collection
 describe('Mongo Account Repository', () => {
@@ -175,4 +177,129 @@ describe('Mongo Account Repository', () => {
         })
     })
 
+    describe('answerQuestion()', () => {
+        test('should return true if answerQuestion success', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModelWithAccessToken()
+            const questionParams = mockQuestionModel()
+            const answerText = faker.lorem.sentence()
+            const questionId = new ObjectId('012345678910')
+
+            questionParams.answer = null
+            questionParams.questionId = questionId.toString()
+
+            const insertResult = await accountCollection.insertOne(
+                { ...accountParams, questions: [{
+                        question: questionParams.question,
+                        questionId: questionId,
+                        answer: null
+                    }]}
+            )
+
+            const result = await sut.answerQuestion({
+                answer: answerText,
+                questionId: questionParams.questionId,
+                accountId: insertResult.insertedId.toString()
+            })
+
+            const account = await accountCollection.findOne({ _id: insertResult.insertedId })
+            expect(result).toBeTruthy()
+            expect(account.questions).toHaveLength(1)
+            expect(account.questions[0].answer).toBe(answerText)
+            expect(account.questions[0].question).toBe(questionParams.question)
+            expect(account.questions[0].questionId.toString()).toBe(questionId.toString())
+        })
+
+        test('should return false when not found account', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModelWithAccessToken()
+            const questionParams = mockQuestionModel()
+            const answerText = faker.lorem.sentence()
+            const questionId = new ObjectId('012345678910')
+
+            questionParams.answer = null
+            questionParams.questionId = questionId.toString()
+
+            const insertResult = await accountCollection.insertOne(
+                { ...accountParams, questions: [{
+                        question: questionParams.question,
+                        questionId: questionId,
+                        answer: null
+                    }]}
+            )
+
+            const result = await sut.answerQuestion({
+                answer: answerText,
+                questionId: questionParams.questionId,
+                accountId: '012345678910'
+            })
+
+            const account = await accountCollection.findOne({ _id: insertResult.insertedId })
+            expect(result).toBeFalsy()
+            expect(account.questions[0].answer).toBeNull()
+        })
+
+        test('should return false when not found question', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModelWithAccessToken()
+            const questionParams = mockQuestionModel()
+            const answerText = faker.lorem.sentence()
+            const questionId = new ObjectId('012345678910')
+
+            questionParams.answer = null
+            questionParams.questionId = questionId.toString()
+
+            const insertResult = await accountCollection.insertOne(
+                { ...accountParams, questions: [{
+                        question: questionParams.question,
+                        questionId: questionId,
+                        answer: null
+                    }]}
+            )
+
+            const result = await sut.answerQuestion({
+                answer: answerText,
+                questionId: '109876543210',
+                accountId: insertResult.insertedId.toString()
+            })
+
+            const account = await accountCollection.findOne({ _id: insertResult.insertedId })
+            expect(result).toBeFalsy()
+            expect(account.questions[0].answer).toBeNull()
+        })
+
+        test('should return false when question is not in target account', async () => {
+            const sut = new AccountMongoRepository()
+
+            const withQuestionAccount = mockAccountModelWithAccessToken()
+            const questionParams = mockQuestionModel()
+            const answerText = faker.lorem.sentence()
+            const questionId = new ObjectId('012345678910')
+
+            questionParams.answer = null
+            questionParams.questionId = questionId.toString()
+
+            const insertWithQuestionResult = await accountCollection.insertOne(
+                { ...withQuestionAccount, questions: [{
+                        question: questionParams.question,
+                        questionId: questionId,
+                        answer: null
+                    }]}
+            )
+
+            const withoutQuestionAccount = mockAccountModelWithAccessToken()
+            const insertWithoutQuestionResult = await accountCollection.insertOne(withoutQuestionAccount)
+
+            const result = await sut.answerQuestion({
+                answer: answerText,
+                questionId: questionParams.questionId,
+                accountId: insertWithoutQuestionResult.insertedId.toString()
+            })
+
+            const account = await accountCollection.findOne({ _id: insertWithQuestionResult.insertedId })
+            expect(result).toBeFalsy()
+            expect(account.questions).toHaveLength(1)
+            expect(account.questions[0].answer).toBeNull()
+        })
+    })
 })

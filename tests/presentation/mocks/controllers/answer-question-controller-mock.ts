@@ -3,5 +3,6 @@ import { faker } from '@faker-js/faker'
 
 export const mockAnswerQuestionControllerRequest = (): AnswerQuestionController.Request => ({
     answer: faker.lorem.sentence(),
-    questionId: faker.datatype.uuid()
+    questionId: faker.datatype.uuid(),
+    accountId: faker.datatype.uuid()
 })

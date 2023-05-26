@@ -8,6 +8,7 @@ import { AccountModel } from '@domain/models/account'
 import { AddQuestionRepository } from '@data/protocols/db/question/add-question-repository'
 import { ObjectId } from 'mongodb'
 import { CheckAccountByNameRepository } from '@data/protocols/db/account/check-account-by-name-repository'
+import { AnswerQuestionRepository } from '@data/protocols/db/question/answer-question-repository'
 
 export class AccountMongoRepository implements
     AddAccountRepository,
@@ -16,7 +17,8 @@ export class AccountMongoRepository implements
     LoadAccountByEmailRepository,
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository,
-    AddQuestionRepository {
+    AddQuestionRepository,
+    AnswerQuestionRepository {
 
     async findById(id) {
         const accountCollection = MongoHelper.getCollection('accounts')
@@ -104,4 +106,20 @@ export class AccountMongoRepository implements
         }
     }
 
+    async answerQuestion (data: AnswerQuestionRepository.Params): Promise<AnswerQuestionRepository.Result> {
+        const { questionId, answer, accountId } = data
+        const accountCollection = MongoHelper.getCollection('accounts')
+        const parsedId = MongoHelper.parseToObjectId(accountId)
+
+        const result = await accountCollection.updateOne({
+            _id: parsedId,
+            'questions.questionId': MongoHelper.parseToObjectId(questionId)
+        }, {
+            $set: {
+                'questions.$.answer': answer
+            }
+        })
+
+        return result.modifiedCount > 0
+    }
 }

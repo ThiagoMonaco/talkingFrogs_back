@@ -5,7 +5,8 @@ export const mockAccountModel = (): AccountModel => ({
     name: faker.name.firstName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
-    id: faker.datatype.uuid()
+    id: faker.datatype.uuid(),
+    questions: []
 })
 
 export const mockAccountModelWithAccessToken = (): AccountModel => ({
@@ -13,5 +14,6 @@ export const mockAccountModelWithAccessToken = (): AccountModel => ({
     email: faker.internet.email(),
     password: faker.internet.password(),
     id: faker.datatype.uuid(),
-    accessToken: faker.datatype.uuid()
+    accessToken: faker.datatype.uuid(),
+    questions: []
 })

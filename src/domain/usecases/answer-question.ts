@@ -6,6 +6,7 @@ export namespace AnswerQuestion {
     export type Params = {
         questionId: string
         answer: string
+        accountId: string
     }
 
     export type Result = boolean
