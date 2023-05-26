@@ -86,4 +86,25 @@ describe('Question routes', () => {
                 }).expect(200)
         })
     })
+
+    describe('POST /remove', () => {
+        test('should return 200 on remove question', async () => {
+            const accountParams = mockAccountModelWithAccessToken()
+            const question: any = mockQuestionModel()
+            question.questionId = new ObjectId('012345678910')
+
+            accountParams.questions.push(question)
+            const insertResult = await accountCollection.insertOne(accountParams)
+            const accessToken = jwt.sign({ id: insertResult.insertedId }, env.jwtSecret, { expiresIn: env.jwtExpiresIn })
+
+            await accountCollection.updateOne({ _id: insertResult.insertedId }, { $set: { accessToken } })
+
+            await request(app)
+                .post('/api/question/remove')
+                .set('x-access-token', accessToken)
+                .send({
+                    questionId: question.questionId.toString()
+                }).expect(200)
+        })
+    })
 })
