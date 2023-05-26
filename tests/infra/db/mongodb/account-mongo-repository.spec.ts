@@ -5,7 +5,6 @@ import { Collection, ObjectId } from 'mongodb'
 import { mockAccountModel, mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import { faker } from '@faker-js/faker'
 import { AddQuestionRepository } from '@data/protocols/db/question/add-question-repository'
-import { mockAskQuestionParams } from '@tests/data/mocks/ask-question-mock'
 import { mockQuestionModel } from '@tests/domain/mocks/question-model-mock'
 
 let accountCollection: Collection
@@ -300,6 +299,86 @@ describe('Mongo Account Repository', () => {
             expect(result).toBeFalsy()
             expect(account.questions).toHaveLength(1)
             expect(account.questions[0].answer).toBeNull()
+        })
+    })
+
+    describe('removeQuestion()', () => {
+        test('should return true if removeQuestion success', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModelWithAccessToken()
+            const questionParams = mockQuestionModel()
+            const questionId = new ObjectId('012345678910')
+
+            questionParams.questionId = questionId.toString()
+
+            const insertResult = await accountCollection.insertOne(
+                { ...accountParams, questions: [{
+                        question: questionParams.question,
+                        questionId: questionId,
+                        answer: null
+                    }]}
+            )
+
+            const result = await sut.removeQuestion({
+                questionId: questionParams.questionId,
+                accountId: insertResult.insertedId.toString()
+            })
+
+            const account = await accountCollection.findOne({ _id: insertResult.insertedId })
+            expect(result).toBeTruthy()
+            expect(account.questions).toHaveLength(0)
+        })
+
+        test('should return false when not found account', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModelWithAccessToken()
+            const questionParams = mockQuestionModel()
+            const questionId = new ObjectId('012345678910')
+
+            questionParams.questionId = questionId.toString()
+
+            const insertResult = await accountCollection.insertOne(
+                { ...accountParams, questions: [{
+                        question: questionParams.question,
+                        questionId: questionId,
+                        answer: null
+                    }]}
+            )
+
+            const result = await sut.removeQuestion({
+                questionId: questionParams.questionId,
+                accountId: '012345678910'
+            })
+
+            const account = await accountCollection.findOne({ _id: insertResult.insertedId })
+            expect(result).toBeFalsy()
+            expect(account.questions).toHaveLength(1)
+        })
+
+        test('should return false when not found question', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModelWithAccessToken()
+            const questionParams = mockQuestionModel()
+            const questionId = new ObjectId('012345678910')
+
+            questionParams.questionId = questionId.toString()
+
+            const insertResult = await accountCollection.insertOne(
+                { ...accountParams, questions: [{
+                        question: questionParams.question,
+                        questionId: questionId,
+                        answer: null
+                    }]}
+            )
+
+            const result = await sut.removeQuestion({
+                questionId: '109876543210',
+                accountId: insertResult.insertedId.toString()
+            })
+
+            const account = await accountCollection.findOne({ _id: insertResult.insertedId })
+            expect(result).toBeFalsy()
+            expect(account.questions).toHaveLength(1)
         })
     })
 })
