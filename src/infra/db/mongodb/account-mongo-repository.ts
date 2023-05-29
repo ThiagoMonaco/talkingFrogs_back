@@ -10,6 +10,7 @@ import { ObjectId } from 'mongodb'
 import { CheckAccountByNameRepository } from '@data/protocols/db/account/check-account-by-name-repository'
 import { AnswerQuestionRepository } from '@data/protocols/db/question/answer-question-repository'
 import { RemoveQuestionRepository } from '@data/protocols/db/question/remove-question-repository'
+import { SetAccountEmailValidatedRepository } from '@data/protocols/db/account/set-account-email-validated-repository'
 
 export class AccountMongoRepository implements
     AddAccountRepository,
@@ -20,7 +21,8 @@ export class AccountMongoRepository implements
     LoadAccountByTokenRepository,
     AddQuestionRepository,
     AnswerQuestionRepository,
-    RemoveQuestionRepository {
+    RemoveQuestionRepository,
+    SetAccountEmailValidatedRepository {
     async findById(id) {
         const accountCollection = MongoHelper.getCollection('accounts')
         return await accountCollection.findOne({ _id: id })
@@ -140,6 +142,22 @@ export class AccountMongoRepository implements
                 questions: {
                     questionId: MongoHelper.parseToObjectId(questionId)
                 }
+            }
+        })
+
+        return result.modifiedCount > 0
+    }
+
+    async setEmailValidated (accountId: SetAccountEmailValidatedRepository.Params): Promise<SetAccountEmailValidatedRepository.Result> {
+        const accountCollection = MongoHelper.getCollection('accounts')
+        const parsedId = MongoHelper.parseToObjectId(accountId)
+
+        const result = await accountCollection.updateOne({
+            _id: parsedId
+        },
+        {
+            $set: {
+                isEmailVerified: true
             }
         })
 

@@ -388,4 +388,19 @@ describe('Mongo Account Repository', () => {
             expect(account.questions).toHaveLength(1)
         })
     })
+
+    describe('setEmailValidated()', () => {
+          test('should return true if setEmailValidated success', async () => {
+              const sut = new AccountMongoRepository()
+              const accountParams = mockAccountModelWithAccessToken()
+              accountParams.isEmailVerified = false
+
+              const insertResult = await accountCollection.insertOne(accountParams)
+              const result = await sut.setEmailValidated(insertResult.insertedId.toString())
+
+              const account = await accountCollection.findOne({ _id: insertResult.insertedId })
+              expect(result).toBeTruthy()
+              expect(account.isEmailVerified).toBeTruthy()
+          })
+    })
 })
