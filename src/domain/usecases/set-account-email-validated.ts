@@ -4,5 +4,5 @@ export interface SetAccountEmailValidated {
 
 export namespace SetAccountEmailValidated {
     export type Params = string
-    export type Result = void
+    export type Result = boolean
 }

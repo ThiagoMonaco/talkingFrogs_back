@@ -1,7 +1,7 @@
 import { Controller, HttpResponse } from '@presentation/protocols'
 import { ValidateEmailToken } from '@domain/usecases/validate-email-token'
-import { badRequest, ok, serverError } from '@presentation/helpers/http-helper'
-import { InvalidTokenError } from '@presentation/errors'
+import { badRequest, notFound, ok, serverError } from '@presentation/helpers/http-helper'
+import { InvalidTokenError, UserNotFoundError } from '@presentation/errors'
 import { Validator } from '@presentation/helpers/validators'
 import { SetAccountEmailValidated } from '@domain/usecases/set-account-email-validated'
 
@@ -26,7 +26,10 @@ export class ValidateEmailTokenController implements Controller {
                 return badRequest(new InvalidTokenError())
             }
 
-            await this.setAccountEmailValidated.setEmailValidated(accountId)
+            const isAccountUpdated = await this.setAccountEmailValidated.setEmailValidated(accountId)
+            if(!isAccountUpdated) {
+                return notFound(new UserNotFoundError())
+            }
 
             return ok()
         } catch (error) {

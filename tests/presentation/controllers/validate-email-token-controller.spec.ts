@@ -2,8 +2,8 @@ import { ValidateEmailTokenController } from '@presentation/controllers/validate
 import { ValidationStub } from '@tests/presentation/stubs/helpers/validation-stub'
 import { ValidateEmailTokenStub } from '@tests/domain/stubs/validate-email-token-stub'
 import { faker } from '@faker-js/faker'
-import { badRequest, serverError } from '@presentation/helpers/http-helper'
-import { InvalidTokenError } from '@presentation/errors'
+import { badRequest, notFound, serverError } from '@presentation/helpers/http-helper'
+import { InvalidTokenError, UserNotFoundError } from '@presentation/errors'
 import { SetAccountEmailValidatedStub } from '@tests/domain/stubs/set-account-email-validated-stub'
 
 interface SutTypes {
@@ -111,5 +111,15 @@ describe('ValidateEmailTokenController', () => {
         const response = await sut.handle(request)
 
         expect(response).toEqual(serverError(error))
+    })
+
+    test('should return 404 if setAccountEmailValidated returns false', async () => {
+        const { sut, setAccountEmailValidatedStub } = makeSut()
+        setAccountEmailValidatedStub.result = false
+        const request = mockRequest()
+
+        const response = await sut.handle(request)
+
+        expect(response).toEqual(notFound(new UserNotFoundError()))
     })
 })

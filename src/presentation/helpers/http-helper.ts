@@ -37,3 +37,12 @@ export const forbidden = (message): HttpResponse=> {
         }
     }
 }
+
+export const notFound = (message): HttpResponse=> {
+    return {
+        statusCode: 404,
+        body: {
+            message: message
+        }
+    }
+}
