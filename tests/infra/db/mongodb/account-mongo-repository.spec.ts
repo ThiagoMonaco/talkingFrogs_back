@@ -29,7 +29,14 @@ describe('Mongo Account Repository', () => {
 
             const result = await sut.add(params)
 
+            const account = await accountCollection.findOne({ email: params.email })
             expect(result).toBe(params.name)
+            expect(account).toBeTruthy()
+            expect(account.name).toBe(params.name)
+            expect(account.password).toBe(params.password)
+            expect(account.email).toBe(params.email)
+            expect(account.questions).toEqual([])
+            expect(account.isEmailVerified).toBe(false)
         })
     })
 

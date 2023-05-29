@@ -8,7 +8,8 @@ export class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepos
         name: faker.name.fullName(),
         email: faker.internet.email(),
         password: faker.datatype.uuid(),
-        questions: []
+        questions: [],
+        isEmailVerified: true,
     }
     async loadByEmail(email: string): Promise<LoadAccountByEmailRepository.Result> {
         if(this.result) {

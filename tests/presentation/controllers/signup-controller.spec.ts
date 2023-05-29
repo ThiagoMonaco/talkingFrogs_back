@@ -5,25 +5,38 @@ import { AuthenticationStub } from '@tests/domain/stubs/authentication-stub'
 import { mockSignUpControllerRequest } from '@tests/presentation/mocks/controllers/signup-controller-mock'
 import { badRequest, forbidden, serverError } from '@presentation/helpers/http-helper'
 import { EmailAlreadyExistsError, NameAlreadyExistsError } from '@presentation/errors'
+import { SendEmailStub } from '@tests/domain/stubs/send-email-stub'
+import { GenerateEmailTokenStub } from '@tests/domain/stubs/generate-email-token-stub'
 
 interface SutType {
     sut: SignupController,
     addAccountStub: AddAccountStub,
     validatorStub: ValidationStub,
-    authenticationStub: AuthenticationStub
+    authenticationStub: AuthenticationStub,
+    sendEmailStub: SendEmailStub,
+    generateEmailTokenStub: GenerateEmailTokenStub
 }
 
 const createSut = (): SutType => {
     const addAccountStub = new AddAccountStub()
     const validatorStub = new ValidationStub()
     const authenticationStub = new AuthenticationStub()
-    const sut = new SignupController(addAccountStub, validatorStub, authenticationStub)
+    const sendEmailStub = new SendEmailStub()
+    const generateEmailTokenStub = new GenerateEmailTokenStub()
+    const sut = new SignupController(
+        addAccountStub,
+        validatorStub,
+        authenticationStub,
+        sendEmailStub,
+        generateEmailTokenStub)
 
     return {
         sut,
         addAccountStub,
         validatorStub,
-        authenticationStub
+        authenticationStub,
+        sendEmailStub,
+        generateEmailTokenStub
     }
 }
 
@@ -80,6 +93,7 @@ describe('SignUp Controller', () => {
 
     test('should call addAccount with 200 if correct data is provided', async() => {
         const { sut, addAccountStub, authenticationStub } = createSut()
+        authenticationStub.result.isEmailVerified = false
         const addAccountSpy = jest.spyOn(addAccountStub, 'add')
         const httpRequest = mockSignUpControllerRequest()
 
@@ -93,7 +107,8 @@ describe('SignUp Controller', () => {
         })
         expect(httpResponse.body).toEqual({
             accessToken: authenticationStub.result.accessToken,
-            name: authenticationStub.result.name
+            name: authenticationStub.result.name,
+            isEmailVerified: authenticationStub.result.isEmailVerified
         })
     })
 
@@ -129,6 +144,64 @@ describe('SignUp Controller', () => {
         const httpResponse = await sut.handle(httpRequest)
 
         expect(httpResponse).toEqual(badRequest(new Error()))
+    })
+
+    test('should call SendEmailUsecase with correct params', async() => {
+        const { sut, sendEmailStub } = createSut()
+        const spy = jest.spyOn(sendEmailStub, 'sendEmail')
+        const httpRequest = mockSignUpControllerRequest()
+
+        await sut.handle(httpRequest)
+
+        expect(spy).toHaveBeenCalledWith(expect.objectContaining({ to: httpRequest.email }))
+    })
+
+    test('should return 500 if SendEmailUsecase throws error', async() => {
+        const { sut, sendEmailStub } = createSut()
+        const error = new Error()
+        error.stack = 'stack'
+        jest.spyOn(sendEmailStub, 'sendEmail').mockImplementationOnce(() => {
+            throw error
+        })
+
+        const httpResponse = await sut.handle(mockSignUpControllerRequest())
+
+        expect(httpResponse).toEqual(serverError(error))
+    })
+
+    test('should call GenerateEmailToken with correct params', async() => {
+        const { sut, generateEmailTokenStub } = createSut()
+        const spy = jest.spyOn(generateEmailTokenStub, 'generateEmailToken')
+        const httpRequest = mockSignUpControllerRequest()
+
+        await sut.handle(httpRequest)
+
+        expect(spy).toHaveBeenCalledWith(httpRequest.email)
+    })
+
+    test('should return 500 if GenerateEmailToken throws error', async() => {
+        const { sut, generateEmailTokenStub } = createSut()
+        const error = new Error()
+        error.stack = 'stack'
+        jest.spyOn(generateEmailTokenStub, 'generateEmailToken').mockImplementationOnce(() => {
+            throw error
+        })
+
+        const httpResponse = await sut.handle(mockSignUpControllerRequest())
+
+        expect(httpResponse).toEqual(serverError(error))
+    })
+
+    test('should return 200 but dont send email if generateEmailToken return null', async() => {
+        const { sut, sendEmailStub, generateEmailTokenStub } = createSut()
+        generateEmailTokenStub.result = null
+        const spy = jest.spyOn(sendEmailStub, 'sendEmail')
+        const httpRequest = mockSignUpControllerRequest()
+
+        const httpResponse = await sut.handle(httpRequest)
+
+        expect(httpResponse.statusCode).toBe(200)
+        expect(spy).not.toHaveBeenCalled()
     })
 
 })

@@ -1,7 +1,7 @@
 import { Controller, HttpResponse } from '@presentation/protocols'
 import { Validator } from '@presentation/helpers/validators'
 import { Authentication } from '@domain/usecases/authentication'
-import { badRequest, ok, serverError, unauthorized } from '@presentation/helpers/http-helper'
+import { badRequest, forbidden, ok, serverError, unauthorized } from '@presentation/helpers/http-helper'
 
 export class LoginController implements Controller {
     private readonly validator: Validator
@@ -24,6 +24,10 @@ export class LoginController implements Controller {
             const authenticationResult = await this.authenticator.auth({ email, password })
             if(!authenticationResult) {
                 return unauthorized()
+            }
+
+            if(!authenticationResult.isEmailVerified) {
+                return forbidden('Email not verified')
             }
 
             return ok({

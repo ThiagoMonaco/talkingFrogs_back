@@ -7,6 +7,11 @@ import { makeSignUpValidation } from '@main/factories/controllers/signup/signup-
 import { makeDbAuthenticationFactory } from '@main/factories/usecases/db-authentication-factory'
 import { LogErrorMongoRepository } from '@infra/db/mongodb/log-error-repository'
 import { LogErrorControllerDecorator } from '@main/decorators/log-error-controller-decorator'
+import { SendEmailUsecase } from '@data/usecases/send-email-usecase'
+import { NodeMailerAdapter } from '@infra/email-sender/node-mailer/node-mailer-adapter'
+import { DbGenerateEmailToken } from '@data/usecases/db-generate-email-token'
+import { EmailValidationRepository } from '@infra/db/mongodb/email-validation-repository'
+import { UuidAdapter } from '@infra/data-types/uuid-adapter'
 
 export const makeSignUpController = (): Controller => {
     const salt = 12
@@ -20,8 +25,22 @@ export const makeSignUpController = (): Controller => {
         accountMongoRepository
     )
 
+    const nodeMailerAdapter = new NodeMailerAdapter()
+    const sendEmail = new SendEmailUsecase(nodeMailerAdapter)
+
+    const generateEmailTokenRepository = new EmailValidationRepository()
+
+    const uuidGenerator = new UuidAdapter()
+    const generateEmailToken = new DbGenerateEmailToken(generateEmailTokenRepository, uuidGenerator)
+
     const logMongoRepository = new LogErrorMongoRepository()
-    const signupController = new SignupController(dbAddAccount, makeSignUpValidation(), makeDbAuthenticationFactory())
+    const signupController = new SignupController(
+        dbAddAccount,
+        makeSignUpValidation(),
+        makeDbAuthenticationFactory(),
+        sendEmail,
+        generateEmailToken
+    )
 
     return new LogErrorControllerDecorator(signupController, logMongoRepository)
 }

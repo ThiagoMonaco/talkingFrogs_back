@@ -72,4 +72,13 @@ describe('Login Controller', () => {
         const httpResponse = await sut.handle(httpRequest)
         expect(httpResponse).toEqual(badRequest(new Error()))
     })
+
+    test('should return 403 if email is not verified', async() => {
+        const { sut, authenticationStub } = makeSut()
+        authenticationStub.result.isEmailVerified = false
+        const httpRequest = mockLoginControllerRequest()
+
+        const httpResponse = await sut.handle(httpRequest)
+        expect(httpResponse.statusCode).toEqual(403)
+    })
 })

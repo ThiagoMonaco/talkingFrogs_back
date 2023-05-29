@@ -5,13 +5,11 @@ import request from 'supertest'
 import app from '@main/config/app'
 import { faker } from '@faker-js/faker'
 import { mockQuestionModel } from '@tests/domain/mocks/question-model-mock'
-import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import env from '@main/config/env'
 
 
 let accountCollection: Collection
-const salt = 12
 describe('Question routes', () => {
     beforeAll(async () => {
         await MongoHelper.connect(process.env.MONGO_URL)

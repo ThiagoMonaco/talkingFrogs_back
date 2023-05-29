@@ -4,6 +4,7 @@ import app from '@main/config/app'
 import { Collection } from 'mongodb'
 import { mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import bcrypt from 'bcrypt'
+import { nodeMailerHelper } from '@infra/email-sender/node-mailer/helpers/node-mailer-helper'
 
 
 let accountCollection: Collection
@@ -23,7 +24,8 @@ describe('Account routes', () => {
     })
 
     describe('POST /signup', () => {
-        test('should return account correctly on signup', async () => {
+        test('should return 200 on signup', async () => {
+            await nodeMailerHelper.createTransporter()
             await request(app)
                 .post('/api/signup')
                 .send({

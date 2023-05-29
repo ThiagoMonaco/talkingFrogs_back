@@ -5,6 +5,7 @@ export interface AccountModel {
     name: string
     email: string
     password: string
+    isEmailVerified: boolean
     questions: QuestionModel[]
     accessToken?: string
 }

@@ -5,7 +5,8 @@ export class AuthenticationStub implements Authentication {
     params: Authentication.Params
     result: Authentication.Result = {
         name: faker.name.fullName(),
-        accessToken: faker.datatype.uuid()
+        accessToken: faker.datatype.uuid(),
+        isEmailVerified: true
     }
     async auth(authentication: Authentication.Params): Promise<Authentication.Result> {
         this.params = authentication
