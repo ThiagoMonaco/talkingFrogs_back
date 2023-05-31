@@ -5,3 +5,7 @@ import { makeDbLoadAccountByToken } from '@main/factories/usecases/db-load-accou
 export const makeAuthMiddleware = (): Middleware => {
     return new AuthMiddleware(makeDbLoadAccountByToken())
 }
+
+export const makeAuthMiddlewarePassWithoutEmailVerified = (): Middleware => {
+    return new AuthMiddleware(makeDbLoadAccountByToken(), true)
+}

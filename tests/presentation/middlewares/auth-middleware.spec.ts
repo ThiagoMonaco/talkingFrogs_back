@@ -9,9 +9,9 @@ interface SutTypes {
     loadAccountByTokenStub: LoadAccountByTokenStub
 }
 
-const makeSut = (): SutTypes => {
+const makeSut = (passWithoutEmailVerified = false): SutTypes => {
     const loadAccountByTokenStub = new LoadAccountByTokenStub()
-    const sut = new AuthMiddleware(loadAccountByTokenStub)
+    const sut = new AuthMiddleware(loadAccountByTokenStub, passWithoutEmailVerified)
     return {
         sut,
         loadAccountByTokenStub
@@ -52,6 +52,15 @@ describe('Auth Middleware', () => {
         const httpResponse = await sut.handle({ accessToken: faker.datatype.uuid() })
 
         expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
+    })
+
+    test('Should return 200 if passWithoutEmailVerified is true and account is not with email verified', async () => {
+        const { sut, loadAccountByTokenStub } = makeSut(true)
+        loadAccountByTokenStub.result.isEmailVerified = false
+
+        const httpResponse = await sut.handle({ accessToken: faker.datatype.uuid() })
+
+        expect(httpResponse).toEqual(ok({ accountId: loadAccountByTokenStub.result.id, accountEmail: loadAccountByTokenStub.result.email }))
     })
 
     test('Should return 200 if LoadAccountByToken returns an valid account', async () => {

@@ -6,9 +6,11 @@ import { LoadAccountByToken } from '@domain/usecases/load-account-by-token'
 
 export class AuthMiddleware implements Middleware {
     private readonly loadAccountByToken: LoadAccountByToken
+    private readonly passWithoutEmailVerified: boolean = false
 
-    constructor(loadAccountByToken: LoadAccountByToken) {
+    constructor(loadAccountByToken: LoadAccountByToken, passWithoutEmailVerified = false) {
         this.loadAccountByToken = loadAccountByToken
+        this.passWithoutEmailVerified = passWithoutEmailVerified
     }
 
     async handle(request: AuthMiddleware.Request): Promise<HttpResponse> {
@@ -24,7 +26,7 @@ export class AuthMiddleware implements Middleware {
                 return forbidden(new AccessDeniedError())
             }
 
-            if(!account.isEmailVerified) {
+            if(!this.passWithoutEmailVerified && !account.isEmailVerified) {
                 return forbidden(new AccessDeniedError())
             }
 
