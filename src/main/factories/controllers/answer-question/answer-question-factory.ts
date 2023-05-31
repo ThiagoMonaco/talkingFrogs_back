@@ -6,13 +6,13 @@ import {
     makeAnswerQuestionValidation
 } from '@main/factories/controllers/answer-question/answer-question-validation-factory'
 import { DbAnswerQuestion } from '@data/usecases/db-answer-question'
-import { AccountMongoRepository } from '@infra/db/mongodb/account-mongo-repository'
+import { QuestionMongoRepository } from '@infra/db/mongodb/question-mongo-repository'
 
 export const makeAnswerQuestionController = (): Controller => {
     const validation = makeAnswerQuestionValidation()
 
-    const accountMongoRepository = new AccountMongoRepository()
-    const answerQuestion = new DbAnswerQuestion(accountMongoRepository)
+    const questionMongoRepository = new QuestionMongoRepository()
+    const answerQuestion = new DbAnswerQuestion(questionMongoRepository)
 
     const answerQuestionController = new AnswerQuestionController(validation, answerQuestion)
 
