@@ -5,9 +5,13 @@ import { Collection } from 'mongodb'
 import { mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import bcrypt from 'bcrypt'
 import { nodeMailerHelper } from '@infra/email-sender/node-mailer/helpers/node-mailer-helper'
+import jwt from 'jsonwebtoken'
+import env from '@main/config/env'
+import { mockEmailValidationTokenModel } from '@tests/domain/mocks/email-validation-token-model-mock'
 
 
 let accountCollection: Collection
+let emailValidationTokenCollection: Collection
 const salt = 12
 describe('Account routes', () => {
     beforeAll(async () => {
@@ -21,6 +25,8 @@ describe('Account routes', () => {
     beforeEach(async () => {
         accountCollection = MongoHelper.getCollection('accounts')
         await accountCollection.deleteMany({})
+        emailValidationTokenCollection = MongoHelper.getCollection('emailValidationToken')
+        await emailValidationTokenCollection.deleteMany({})
     })
 
     describe('POST /signup', () => {
@@ -66,6 +72,31 @@ describe('Account routes', () => {
                     email: accountParams.email,
                     password: 'invalidPassword'
                 }).expect(401)
+        })
+    })
+
+    describe('POST /validate-email',  () => {
+
+        test('should return 200 on validate email', async () => {
+            const accountParams = mockAccountModelWithAccessToken()
+            accountParams.isEmailVerified = false
+
+            const insertResult = await accountCollection.insertOne(accountParams)
+
+            const accessToken = jwt.sign({ id: insertResult.insertedId }, env.jwtSecret, { expiresIn: env.jwtExpiresIn })
+            await accountCollection.updateOne({ _id: insertResult.insertedId }, { $set: { accessToken } })
+
+            const emailValidationTokenParams = mockEmailValidationTokenModel()
+            emailValidationTokenParams.email = accountParams.email
+
+            await emailValidationTokenCollection.insertOne(emailValidationTokenParams)
+
+            await request(app)
+                .post('/api/validate-email')
+                .set('x-access-token', accessToken)
+                .send({
+                    token: emailValidationTokenParams.token
+                }).expect(200)
         })
     })
 })
