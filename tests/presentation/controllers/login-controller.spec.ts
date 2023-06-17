@@ -58,10 +58,17 @@ describe('Login Controller', () => {
 
         const response = await sut.handle(mockLoginControllerRequest())
 
-        expect(response).toEqual(ok({
-            accessToken: authenticationStub.result.accessToken,
+        expect(response.body).toEqual({
             name: authenticationStub.result.name
-        }))
+        })
+
+        expect(response.cookies).toEqual([{
+            name: 'x-access-token',
+            value: authenticationStub.result.accessToken,
+            maxAge: 86400
+        }])
+
+        expect(response.statusCode).toEqual(200)
     })
 
     test('should return 400 if Validator returns a error', async() => {

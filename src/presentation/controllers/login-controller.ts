@@ -30,10 +30,17 @@ export class LoginController implements Controller {
                 return forbidden('Email not verified')
             }
 
-            return ok({
-                accessToken: authenticationResult.accessToken,
+            const result = ok({
                 name: authenticationResult.name
             })
+
+            result.cookies = [{
+                name: 'x-access-token',
+                value: authenticationResult.accessToken,
+                maxAge: 86400
+            }]
+
+            return result
         } catch (error) {
             return serverError(new Error(error))
         }
