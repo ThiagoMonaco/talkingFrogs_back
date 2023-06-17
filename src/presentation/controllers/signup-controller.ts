@@ -46,20 +46,25 @@ export class SignupController implements Controller {
             const emailToken = await this.generateEmailToken.generateEmailToken(email)
 
             if(emailToken) {
-                 this.sendEmail.sendEmail({
+                 await this.sendEmail.sendEmail({
                     to: email,
                     subject: 'Talking Frogs - Email validation',
                     text: `Hello ${name}, this is your email validation token: ${emailToken}`
                 })
             }
 
-            const result = ok(authenticationResult)
+            const result = ok({
+                name: authenticationResult.name,
+                isEmailVerified: authenticationResult.isEmailVerified
+            })
+
             result.cookies = []
             result.cookies.push({
                 name: 'x-access-token',
                 value: authenticationResult.accessToken,
                 maxAge: 86400
             })
+
             return result
         } catch (error) {
             return serverError(error)

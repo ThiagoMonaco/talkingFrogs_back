@@ -105,11 +105,17 @@ describe('SignUp Controller', () => {
             email: httpRequest.email,
             password: httpRequest.password
         })
+
         expect(httpResponse.body).toEqual({
-            accessToken: authenticationStub.result.accessToken,
             name: authenticationStub.result.name,
             isEmailVerified: authenticationStub.result.isEmailVerified
         })
+
+        expect(httpResponse.cookies).toEqual([{
+            name: 'x-access-token',
+            value: authenticationStub.result.accessToken,
+            maxAge: 86400
+        }])
     })
 
     test('should return 500 if addAccount throws error', async() => {
