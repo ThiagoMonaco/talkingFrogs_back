@@ -53,7 +53,14 @@ export class SignupController implements Controller {
                 })
             }
 
-            return ok(authenticationResult)
+            const result = ok(authenticationResult)
+            result.cookies = []
+            result.cookies.push({
+                name: 'x-access-token',
+                value: authenticationResult.accessToken,
+                maxAge: 86400
+            })
+            return result
         } catch (error) {
             return serverError(error)
         }

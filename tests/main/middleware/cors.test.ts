@@ -9,8 +9,8 @@ describe('Middleware CORS test', function () {
 
         await request(app)
             .get('/test_cors')
-            .expect('access-control-allow-origin', '*')
-            .expect('access-control-allow-headers', '*')
+            .expect('access-control-allow-headers', 'Content-Type, *')
             .expect('access-control-allow-methods', '*')
+            .expect('access-control-allow-credentials', 'true')
     })
 })
