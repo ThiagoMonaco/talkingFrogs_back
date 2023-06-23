@@ -26,10 +26,6 @@ export class LoginController implements Controller {
                 return unauthorized()
             }
 
-            if(!authenticationResult.isEmailVerified) {
-                return forbidden('Email not verified')
-            }
-
             const result = ok({
                 name: authenticationResult.name
             })
