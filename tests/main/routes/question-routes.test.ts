@@ -54,7 +54,7 @@ describe('Question routes', () => {
 
             await request(app)
                 .post('/api/question/answer')
-                .set('x-access-token', accessToken)
+                .set('Cookie', `x-access-token=${accessToken}`)
                 .send({
                     questionId: question.questionId.toString(),
                     answer: faker.lorem.sentence()
@@ -78,7 +78,7 @@ describe('Question routes', () => {
 
             await request(app)
                 .post('/api/question/answer/remove')
-                .set('x-access-token', accessToken)
+                .set('Cookie', `x-access-token=${accessToken}`)
                 .send({
                     questionId: question.questionId.toString()
                 }).expect(200)
@@ -99,7 +99,7 @@ describe('Question routes', () => {
 
             await request(app)
                 .post('/api/question/remove')
-                .set('x-access-token', accessToken)
+                .set('Cookie', `x-access-token=${accessToken}`)
                 .send({
                     questionId: question.questionId.toString()
                 }).expect(200)

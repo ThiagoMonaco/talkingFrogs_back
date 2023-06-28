@@ -27,7 +27,8 @@ export class LoginController implements Controller {
             }
 
             const result = ok({
-                name: authenticationResult.name
+                name: authenticationResult.name,
+                isEmailVerified: authenticationResult.isEmailVerified
             })
 
             result.cookies = [{

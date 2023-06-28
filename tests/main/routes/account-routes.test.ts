@@ -93,7 +93,7 @@ describe('Account routes', () => {
 
             await request(app)
                 .post('/api/validate-email')
-                .set('x-access-token', accessToken)
+                .set('Cookie', `x-access-token=${accessToken}`)
                 .send({
                     token: emailValidationTokenParams.token
                 }).expect(200)

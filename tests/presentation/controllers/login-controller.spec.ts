@@ -59,7 +59,8 @@ describe('Login Controller', () => {
         const response = await sut.handle(mockLoginControllerRequest())
 
         expect(response.body).toEqual({
-            name: authenticationStub.result.name
+            name: authenticationStub.result.name,
+            isEmailVerified: authenticationStub.result.isEmailVerified
         })
 
         expect(response.cookies).toEqual([{
