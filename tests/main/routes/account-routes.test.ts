@@ -8,6 +8,7 @@ import { nodeMailerHelper } from '@infra/email-sender/node-mailer/helpers/node-m
 import jwt from 'jsonwebtoken'
 import env from '@main/config/env'
 import { mockEmailValidationTokenModel } from '@tests/domain/mocks/email-validation-token-model-mock'
+import { faker } from '@faker-js/faker'
 
 
 let accountCollection: Collection
@@ -97,6 +98,19 @@ describe('Account routes', () => {
                 .send({
                     token: emailValidationTokenParams.token
                 }).expect(200)
+        })
+    })
+
+    describe('POST /send-email-token', () => {
+        test('should return 200 on send email token', async () => {
+          const payload = {
+              email: faker.internet.email()
+          }
+
+            await request(app)
+                .post('/api/send-email-token')
+                .send(payload)
+                .expect(200)
         })
     })
 })
