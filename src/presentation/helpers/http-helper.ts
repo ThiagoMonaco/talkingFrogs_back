@@ -32,17 +32,13 @@ export const ok = (data?: any): HttpResponse=> {
 export const forbidden = (message): HttpResponse=> {
     return {
         statusCode: 403,
-        body: {
-            message: message
-        }
+        body: message
     }
 }
 
 export const notFound = (message): HttpResponse=> {
     return {
         statusCode: 404,
-        body: {
-            message: message
-        }
+        body: message
     }
 }
