@@ -7,6 +7,7 @@ import { LoadAccountByTokenRepository } from '@data/protocols/db/account/load-ac
 import { AccountModel } from '@domain/models/account'
 import { CheckAccountByNameRepository } from '@data/protocols/db/account/check-account-by-name-repository'
 import { SetAccountEmailValidatedRepository } from '@data/protocols/db/account/set-account-email-validated-repository'
+import { GetUserDataByNameRepository } from '@data/protocols/db/account/get-user-data-by-name-repository'
 
 export class AccountMongoRepository implements
     AddAccountRepository,
@@ -15,6 +16,7 @@ export class AccountMongoRepository implements
     LoadAccountByEmailRepository,
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository,
+    GetUserDataByNameRepository,
     SetAccountEmailValidatedRepository {
     async findById(id) {
         const accountCollection = MongoHelper.getCollection('accounts')
@@ -93,5 +95,23 @@ export class AccountMongoRepository implements
         })
 
         return result.modifiedCount > 0
+    }
+
+    async getUserDataByName (name: string): Promise<GetUserDataByNameRepository.Result> {
+        const accountCollection = MongoHelper.getCollection('accounts')
+        const account = await accountCollection.findOne({ name }, {
+            projection: {
+                _id: 1,
+                name: 1,
+                questions: 1
+            }
+        })
+        if(!account) {
+            return null
+        }
+
+        const parsedAccount = MongoHelper.mapId(account)
+
+        return {...parsedAccount, accountId: parsedAccount.id, accountName: parsedAccount.name}
     }
 }

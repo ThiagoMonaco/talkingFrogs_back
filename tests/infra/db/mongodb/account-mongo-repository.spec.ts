@@ -4,6 +4,7 @@ import { mockAddAccountParams } from '@tests/domain/mocks/add-account-mock'
 import { Collection, ObjectId } from 'mongodb'
 import { mockAccountModel, mockAccountModelWithAccessToken } from '@tests/domain/mocks/account-model-mock'
 import { faker } from '@faker-js/faker'
+import { mockQuestionModel } from '@tests/domain/mocks/question-model-mock'
 
 let accountCollection: Collection
 describe('Mongo Account Repository', () => {
@@ -156,5 +157,30 @@ describe('Mongo Account Repository', () => {
               expect(result).toBeTruthy()
               expect(account.isEmailVerified).toBeTruthy()
           })
+    })
+
+    describe('loadAccountByName()', () => {
+        test('should return an account on loadAccountByName', async () => {
+            const sut = new AccountMongoRepository()
+            const accountParams = mockAccountModel()
+            const question = mockQuestionModel()
+            accountParams.questions = [question]
+            await accountCollection.insertOne(accountParams)
+
+            const account = await sut.getUserDataByName(accountParams.name)
+
+            expect(account).toBeTruthy()
+            expect(account.accountId).toBeTruthy()
+            expect(account.accountName).toBe(accountParams.name)
+            expect(account.questions).toHaveLength(1)
+        })
+
+        test('should return null if loadAccountByName fails', async () => {
+            const sut = new AccountMongoRepository()
+
+            const account = await sut.getUserDataByName('')
+
+            expect(account).toBeNull()
+        })
     })
 })
