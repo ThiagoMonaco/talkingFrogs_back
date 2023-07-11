@@ -4,15 +4,18 @@ import { faker } from '@faker-js/faker'
 
 export class GetUserDataByNameStub implements GetUserDataByName {
 	result: GetUserDataByName.Result = {
-		accountId: faker.name.firstName(),
-		accountName: '',
+		id: faker.name.firstName(),
+		name: '',
 		questions: [
 			mockQuestionModel(),
 			mockQuestionModel(),
 		]
 	}
 	async getUserDataByName(accountName: string): Promise<GetUserDataByName.Result> {
-		this.result.accountName = accountName
+		if(!this.result) {
+			return this.result
+		}
+		this.result.name = accountName
 		return this.result
 	}
 

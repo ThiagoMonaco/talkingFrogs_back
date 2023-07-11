@@ -113,4 +113,28 @@ describe('Account routes', () => {
                 .expect(200)
         })
     })
+
+    describe('GET /user/:accountName', () => {
+        test('should return 200 on get user', async () => {
+            const accountParams = mockAccountModelWithAccessToken()
+            accountParams.isEmailVerified = false
+
+            await accountCollection.insertOne(accountParams)
+
+            await request(app)
+                .get(`/api/user/${accountParams.name}`)
+                .expect(200)
+        })
+
+        test('should return 400 when not found user', async () => {
+            const accountParams = mockAccountModelWithAccessToken()
+            accountParams.isEmailVerified = false
+
+            await accountCollection.insertOne(accountParams)
+
+            await request(app)
+                .get(`/api/user/notfounduser`)
+                .expect(400)
+        })
+    })
 })

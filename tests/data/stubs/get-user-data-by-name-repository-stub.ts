@@ -5,15 +5,15 @@ import { mockQuestionModel } from '@tests/domain/mocks/question-model-mock'
 
 export class GetUserDataByNameRepositoryStub implements GetUserDataByNameRepository {
 	result: GetUserDataByName.Result = {
-		accountId: faker.name.firstName(),
-		accountName: '',
+		id: faker.name.firstName(),
+		name: '',
 		questions: [
 			mockQuestionModel(),
 			mockQuestionModel(),
 		]
 	}
 	async getUserDataByName(accountName: string): Promise<GetUserDataByNameRepository.Result> {
-		this.result.accountName = accountName
+		this.result.name = accountName
 		return this.result
 	}
 

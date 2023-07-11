@@ -110,8 +110,6 @@ export class AccountMongoRepository implements
             return null
         }
 
-        const parsedAccount = MongoHelper.mapId(account)
-
-        return {...parsedAccount, accountId: parsedAccount.id, accountName: parsedAccount.name}
+        return MongoHelper.mapId(account)
     }
 }

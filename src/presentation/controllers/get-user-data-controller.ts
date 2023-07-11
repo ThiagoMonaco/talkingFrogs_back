@@ -2,6 +2,7 @@ import { Controller, HttpResponse } from '@presentation/protocols'
 import { Validator } from '@presentation/helpers/validators'
 import { badRequest, ok, serverError } from '@presentation/helpers/http-helper'
 import { GetUserDataByName } from '@domain/usecases/get-user-data-by-name'
+import { UserNotFoundError } from '@presentation/errors'
 
 export class GetUserDataController implements Controller {
 	constructor(
@@ -16,6 +17,11 @@ export class GetUserDataController implements Controller {
 				return badRequest(error)
 			}
 			const userData = await this.getUserDataByName.getUserDataByName(request.accountName)
+
+			if(!userData) {
+				return badRequest(new UserNotFoundError())
+			}
+
 			return ok(userData)
 		} catch (error) {
 			return serverError(error)

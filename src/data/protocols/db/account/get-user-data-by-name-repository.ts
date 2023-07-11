@@ -6,8 +6,8 @@ export interface GetUserDataByNameRepository {
 
 export namespace GetUserDataByNameRepository {
 	export type Result = {
-		accountId: string
-		accountName: string
+		id: string
+		name: string
 		questions: QuestionModel[]
 	}
 }

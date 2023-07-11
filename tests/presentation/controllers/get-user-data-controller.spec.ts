@@ -2,8 +2,8 @@ import { GetUserDataController } from '@presentation/controllers/get-user-data-c
 import { ValidationStub } from '@tests/presentation/stubs/helpers/validation-stub'
 import { faker } from '@faker-js/faker'
 import { GetUserDataByNameStub } from '@tests/domain/stubs/get-user-data-by-name-stub'
-import { ServerError } from '@presentation/errors'
-import { serverError } from '@presentation/helpers/http-helper'
+import { UserNotFoundError } from '@presentation/errors'
+import { badRequest, serverError } from '@presentation/helpers/http-helper'
 
 interface SutTypes {
 	sut: GetUserDataController
@@ -78,6 +78,16 @@ describe('GetUserDataController', () => {
 		const httpResponse = await sut.handle(httpRequest)
 
 		expect(httpResponse).toEqual(serverError(new Error()))
+	})
+
+	test('Should return 400 if GetUserDataByName returns null', async () => {
+		const { sut, getUserDataByNameStub } = makeSut()
+		const httpRequest = mockRequest()
+		getUserDataByNameStub.result = null
+
+		const httpResponse = await sut.handle(httpRequest)
+
+		expect(httpResponse).toEqual(badRequest(new UserNotFoundError()))
 	})
 
 })

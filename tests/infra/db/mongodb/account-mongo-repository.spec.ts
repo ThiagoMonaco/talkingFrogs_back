@@ -170,8 +170,8 @@ describe('Mongo Account Repository', () => {
             const account = await sut.getUserDataByName(accountParams.name)
 
             expect(account).toBeTruthy()
-            expect(account.accountId).toBeTruthy()
-            expect(account.accountName).toBe(accountParams.name)
+            expect(account.id).toBeTruthy()
+            expect(account.name).toBe(accountParams.name)
             expect(account.questions).toHaveLength(1)
         })
 
