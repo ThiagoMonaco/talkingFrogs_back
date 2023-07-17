@@ -1,13 +1,16 @@
 import { Controller, HttpResponse } from '@presentation/protocols'
-import { ok } from '@presentation/helpers/http-helper'
+import { ok, serverError } from '@presentation/helpers/http-helper'
 
 export class GetUserDataByTokenController implements Controller {
 	async handle(request: GetUserDataByTokenController.Request): Promise<HttpResponse> {
-		console.log(request)
-		return ok({
-			name: request.accountName,
-			email: request.accountEmail,
-		})
+		try {
+			return ok({
+				name: request.accountName,
+				email: request.accountEmail,
+			})
+		} catch (error) {
+			return serverError(error)
+		}
 	}
 }
 
