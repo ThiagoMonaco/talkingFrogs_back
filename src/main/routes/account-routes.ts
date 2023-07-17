@@ -5,15 +5,18 @@ import { makeLoginController } from '@main/factories/controllers/login/login-fac
 import { makeValidateEmailToken } from '@main/factories/controllers/validate-email-token/validate-email-token-factory'
 import { adaptMiddleware } from '@main/adapters/express-middleware-adapter'
 import {
+    makeAuthMiddleware,
     makeAuthMiddlewarePassWithoutEmailVerified
 } from '@main/factories/middlewares/auth-middleware-factory'
 import { makeSendEmailTokenController } from '@main/factories/controllers/send-email-token/send-email-token-factory'
 import { makeGetUserDataController } from '@main/factories/controllers/get-user-data/get-user-data-factory'
+import { GetUserDataByTokenController } from '@presentation/controllers/get-user-data-by-token-controller'
 
 export default (router: Router): void => {
+    router.get('/user/token', adaptMiddleware(makeAuthMiddleware()) ,adaptRoute(new GetUserDataByTokenController()))
     router.post('/signup', adaptRoute(makeSignUpController()))
     router.post('/login', adaptRoute(makeLoginController()))
     router.post('/send-email-token', adaptRoute(makeSendEmailTokenController()))
     router.post('/validate-email', adaptMiddleware(makeAuthMiddlewarePassWithoutEmailVerified()) ,adaptRoute(makeValidateEmailToken()))
-    router.get('/user/:accountName', adaptRoute(makeGetUserDataController()))
+    router.get('/user/:username', adaptRoute(makeGetUserDataController()))
 }

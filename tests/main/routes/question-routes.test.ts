@@ -32,7 +32,7 @@ describe('Question routes', () => {
             await request(app)
                 .post('/api/question/ask')
                 .send({
-                    accountName: accountParams.name,
+                    name: accountParams.name,
                     question: faker.lorem.sentence()
                 }).expect(200)
         })

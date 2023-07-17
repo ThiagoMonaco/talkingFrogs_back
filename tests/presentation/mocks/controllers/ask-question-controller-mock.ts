@@ -3,5 +3,5 @@ import { faker } from '@faker-js/faker'
 
 export const mockAskQuestionControllerRequest = (): AskQuestionController.Request => ({
     question: faker.lorem.sentence(),
-    accountName: faker.internet.userName()
+    name: faker.internet.userName()
 })

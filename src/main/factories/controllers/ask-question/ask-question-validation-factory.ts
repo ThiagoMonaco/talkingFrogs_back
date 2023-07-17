@@ -7,7 +7,7 @@ import {
 export const makeAskQuestionValidation = (): ValidatorComposite => {
     const validations: Validator[] = []
 
-    const requiredFields = ['accountName', 'question']
+    const requiredFields = ['name', 'question']
     for (const field of requiredFields) {
         validations.push(new NotBlankFieldValidation(field))
     }

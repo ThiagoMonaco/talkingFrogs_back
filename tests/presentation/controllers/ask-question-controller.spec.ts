@@ -4,6 +4,7 @@ import { AskQuestionStub } from '@tests/domain/stubs/ask-question-stub'
 import { mockAskQuestionControllerRequest } from '@tests/presentation/mocks/controllers/ask-question-controller-mock'
 import { badRequest } from '@presentation/helpers/http-helper'
 import { ServerError, UserNotFoundError } from '@presentation/errors'
+import { AskQuestion } from '@domain/usecases/ask-question'
 
 interface SutTypes {
     sut: AskQuestionController
@@ -47,8 +48,8 @@ describe('AskQuestionController', () => {
         const { sut, askQuestionStub } = makeSut()
         const askSpy = jest.spyOn(askQuestionStub, 'ask')
         const request = mockAskQuestionControllerRequest()
-        const expectedParams: AskQuestionController.Request = {
-            accountName: request.accountName,
+        const expectedParams: AskQuestion.Params = {
+            accountName: request.name,
             question: request.question
         }
 

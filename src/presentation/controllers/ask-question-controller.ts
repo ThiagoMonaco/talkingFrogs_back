@@ -20,8 +20,8 @@ export class AskQuestionController implements Controller {
                 return badRequest(error)
             }
 
-            const { accountName, question } = request
-            const response = await this.askQuestion.ask({ accountName, question })
+            const { name, question } = request
+            const response = await this.askQuestion.ask({ accountName: name, question })
 
             if(!response) {
                 return badRequest(new UserNotFoundError())
@@ -38,7 +38,7 @@ export class AskQuestionController implements Controller {
 
 export namespace AskQuestionController {
     export type Request = {
-        accountName: string
+        name: string
         question: string
     }
 }

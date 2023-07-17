@@ -16,7 +16,7 @@ export class GetUserDataController implements Controller {
 			if (error) {
 				return badRequest(error)
 			}
-			const userData = await this.getUserDataByName.getUserDataByName(request.accountName)
+			const userData = await this.getUserDataByName.getUserDataByName(request.username)
 
 			if(!userData) {
 				return badRequest(new UserNotFoundError())
@@ -31,6 +31,6 @@ export class GetUserDataController implements Controller {
 
 export namespace GetUserDataController {
 	export type Request = {
-		accountName: string
+		username: string
 	}
 }

@@ -30,7 +30,11 @@ export class AuthMiddleware implements Middleware {
                 return forbidden(new AccessDeniedError())
             }
 
-            return ok({ accountId: account.id, accountEmail: account.email })
+            return ok({
+                accountId: account.id,
+                accountEmail: account.email,
+                accountName: account.name
+            })
         } catch (e) {
             return serverError(e)
         }

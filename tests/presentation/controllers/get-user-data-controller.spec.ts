@@ -23,7 +23,7 @@ const makeSut = (): SutTypes => {
 }
 
 const mockRequest = (): GetUserDataController.Request => ({
-	accountName: faker.name.firstName()
+	username: faker.name.firstName()
 })
 
 describe('GetUserDataController', () => {
@@ -55,7 +55,7 @@ describe('GetUserDataController', () => {
 
 		await sut.handle(httpRequest)
 
-		expect(getUserDataByNameSpy).toHaveBeenCalledWith(httpRequest.accountName)
+		expect(getUserDataByNameSpy).toHaveBeenCalledWith(httpRequest.username)
 	})
 
 	test('Should return 200 with userData when GetUserDataByName returns a user', async () => {

@@ -8,7 +8,7 @@ import {
 export const makeGetUserDataValidation = (): ValidatorComposite => {
 	const validations: Validator[] = []
 
-	const requiredFields = ['accountName']
+	const requiredFields = ['username']
 	for (const field of requiredFields) {
 		validations.push(new NotBlankFieldValidation(field))
 	}

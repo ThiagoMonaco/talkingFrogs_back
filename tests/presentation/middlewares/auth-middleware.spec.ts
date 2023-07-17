@@ -60,7 +60,11 @@ describe('Auth Middleware', () => {
 
         const httpResponse = await sut.handle({ accessToken: faker.datatype.uuid() })
 
-        expect(httpResponse).toEqual(ok({ accountId: loadAccountByTokenStub.result.id, accountEmail: loadAccountByTokenStub.result.email }))
+        expect(httpResponse).toEqual(ok({
+            accountId: loadAccountByTokenStub.result.id,
+            accountEmail: loadAccountByTokenStub.result.email,
+            accountName: loadAccountByTokenStub.result.name
+        }))
     })
 
     test('Should return 200 if LoadAccountByToken returns an valid account', async () => {
@@ -68,6 +72,10 @@ describe('Auth Middleware', () => {
         const httpResponse = await sut.handle({ accessToken: faker.datatype.uuid() })
 
         expect(httpResponse.statusCode).toBe(200)
-        expect(httpResponse.body).toEqual({ accountId: loadAccountByTokenStub.result.id, accountEmail: loadAccountByTokenStub.result.email })
+        expect(httpResponse.body).toEqual({
+            accountId: loadAccountByTokenStub.result.id,
+            accountEmail: loadAccountByTokenStub.result.email,
+            accountName: loadAccountByTokenStub.result.name
+        })
     })
 })
