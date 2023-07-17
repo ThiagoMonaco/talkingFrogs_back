@@ -137,4 +137,21 @@ describe('Account routes', () => {
                 .expect(400)
         })
     })
+
+    describe('GET /user-token', () => {
+        test('should return 200 on get user by token', async () => {
+            const accountParams = mockAccountModelWithAccessToken()
+            // accountParams.isEmailVerified = false
+
+            const insertResult = await accountCollection.insertOne(accountParams)
+
+            const accessToken = jwt.sign({ id: insertResult.insertedId }, env.jwtSecret, { expiresIn: env.jwtExpiresIn })
+            await accountCollection.updateOne({ _id: insertResult.insertedId }, { $set: { accessToken } })
+
+            await request(app)
+                .get(`/api/user-token`)
+                .set('Cookie', `x-access-token=${accessToken}`)
+                .expect(200)
+        })
+    })
 })
