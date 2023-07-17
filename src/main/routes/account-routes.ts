@@ -11,9 +11,12 @@ import {
 import { makeSendEmailTokenController } from '@main/factories/controllers/send-email-token/send-email-token-factory'
 import { makeGetUserDataController } from '@main/factories/controllers/get-user-data/get-user-data-factory'
 import { GetUserDataByTokenController } from '@presentation/controllers/get-user-data-by-token-controller'
+import {
+    makeGetUserDataByTokenController
+} from '@main/factories/controllers/get-user-data-by-token/get-user-data-by-token-factory'
 
 export default (router: Router): void => {
-    router.get('/user/token', adaptMiddleware(makeAuthMiddleware()) ,adaptRoute(new GetUserDataByTokenController()))
+    router.get('/user/token', adaptMiddleware(makeAuthMiddleware()), adaptRoute(makeGetUserDataByTokenController()))
     router.post('/signup', adaptRoute(makeSignUpController()))
     router.post('/login', adaptRoute(makeLoginController()))
     router.post('/send-email-token', adaptRoute(makeSendEmailTokenController()))
