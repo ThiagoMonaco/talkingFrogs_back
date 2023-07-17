@@ -141,7 +141,6 @@ describe('Account routes', () => {
     describe('GET /user-token', () => {
         test('should return 200 on get user by token', async () => {
             const accountParams = mockAccountModelWithAccessToken()
-            // accountParams.isEmailVerified = false
 
             const insertResult = await accountCollection.insertOne(accountParams)
 
