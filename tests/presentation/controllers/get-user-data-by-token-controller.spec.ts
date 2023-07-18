@@ -12,7 +12,7 @@ const makeSut = (): SutTypes => {
 }
 
 const mockRequest = (): GetUserDataByTokenController.Request => ({
-	accountId: faker.datatype.uuid(),
+	isEmailVerified: true,
 	accountEmail: faker.internet.email(),
 	accountName: faker.name.firstName()
 })
@@ -25,7 +25,8 @@ describe('GetUserDataByTokenController', () => {
 		expect(response.statusCode).toBe(200)
 		expect(response.body).toEqual({
 			name: request.accountName,
-			email: request.accountEmail
+			email: request.accountEmail,
+			isEmailVerified: request.isEmailVerified
 		})
 	})
 })

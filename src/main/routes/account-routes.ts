@@ -20,5 +20,5 @@ export default (router: Router): void => {
     router.post('/send-email-token', adaptRoute(makeSendEmailTokenController()))
     router.post('/validate-email', adaptMiddleware(makeAuthMiddlewarePassWithoutEmailVerified()) ,adaptRoute(makeValidateEmailToken()))
     router.get('/user/:username', adaptRoute(makeGetUserDataController()))
-    router.get('/user-token', adaptMiddleware(makeAuthMiddleware()), adaptRoute(makeGetUserDataByTokenController()))
+    router.get('/user-token', adaptMiddleware(makeAuthMiddlewarePassWithoutEmailVerified()), adaptRoute(makeGetUserDataByTokenController()))
 }

@@ -7,6 +7,7 @@ export class GetUserDataByTokenController implements Controller {
 			return ok({
 				name: request.accountName,
 				email: request.accountEmail,
+				isEmailVerified: request.isEmailVerified
 			})
 		} catch (error) {
 			return serverError(error)
@@ -16,7 +17,7 @@ export class GetUserDataByTokenController implements Controller {
 
 export namespace GetUserDataByTokenController {
 	export type Request = {
-		accountId: string
+		isEmailVerified: boolean
 		accountEmail: string
 		accountName: string
 	}

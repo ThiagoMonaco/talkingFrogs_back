@@ -9,6 +9,7 @@ export const adaptRoute = (controller: Controller) => {
             accountId: req.accountId,
             accountEmail: req.accountEmail,
             accountName: req.accountName,
+            isEmailVerified: req.isEmailVerified
         }
         const httpResponse = await controller.handle(httpRequest)
         res.status(httpResponse.statusCode)

@@ -63,7 +63,8 @@ describe('Auth Middleware', () => {
         expect(httpResponse).toEqual(ok({
             accountId: loadAccountByTokenStub.result.id,
             accountEmail: loadAccountByTokenStub.result.email,
-            accountName: loadAccountByTokenStub.result.name
+            accountName: loadAccountByTokenStub.result.name,
+            isEmailVerified: loadAccountByTokenStub.result.isEmailVerified
         }))
     })
 
@@ -75,7 +76,8 @@ describe('Auth Middleware', () => {
         expect(httpResponse.body).toEqual({
             accountId: loadAccountByTokenStub.result.id,
             accountEmail: loadAccountByTokenStub.result.email,
-            accountName: loadAccountByTokenStub.result.name
+            accountName: loadAccountByTokenStub.result.name,
+            isEmailVerified: loadAccountByTokenStub.result.isEmailVerified
         })
     })
 })

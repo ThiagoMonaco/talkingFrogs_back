@@ -33,7 +33,8 @@ export class AuthMiddleware implements Middleware {
             return ok({
                 accountId: account.id,
                 accountEmail: account.email,
-                accountName: account.name
+                accountName: account.name,
+                isEmailVerified: account.isEmailVerified
             })
         } catch (e) {
             return serverError(e)

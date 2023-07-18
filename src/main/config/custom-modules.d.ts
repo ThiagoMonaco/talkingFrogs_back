@@ -3,5 +3,6 @@ declare namespace Express {
         accountId?: string
         accountEmail?: string
         accountName?: string
+        isEmailVerified?: boolean
     }
 }
