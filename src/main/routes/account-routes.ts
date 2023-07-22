@@ -5,7 +5,6 @@ import { makeLoginController } from '@main/factories/controllers/login/login-fac
 import { makeValidateEmailToken } from '@main/factories/controllers/validate-email-token/validate-email-token-factory'
 import { adaptMiddleware } from '@main/adapters/express-middleware-adapter'
 import {
-    makeAuthMiddleware,
     makeAuthMiddlewarePassWithoutEmailVerified
 } from '@main/factories/middlewares/auth-middleware-factory'
 import { makeSendEmailTokenController } from '@main/factories/controllers/send-email-token/send-email-token-factory'
