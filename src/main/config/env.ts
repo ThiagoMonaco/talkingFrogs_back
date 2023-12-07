@@ -7,7 +7,7 @@ export default {
     smtpHost: process.env.SMTP_HOST || 'smtp.gmail.com',
     smtpPort: process.env.SMTP_PORT || 465,
     smtpAuth: {
-        user: process.env.SMTP_USER || 'talkingfrogsdev@gmail.com',
-        pass: process.env.SMTP_PASS || 'zxictupsfkevbaea'
+        user: process.env.SMTP_USER || 'youremail,
+        pass: process.env.SMTP_PASS || 'smtp_pass'
     }
 }
